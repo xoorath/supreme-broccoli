@@ -227,6 +227,13 @@
     <ClInclude Include="Include\Subscription.h" />
     <ClInclude Include="Include\Types.h" />
     <ClInclude Include="Include\Window_Windows.h" />
+    <ClInclude Include="ThirdParty\GL\glcorearb.h" />
+    <ClInclude Include="ThirdParty\GL\glew.h" />
+    <ClInclude Include="ThirdParty\GL\glext.h" />
+    <ClInclude Include="ThirdParty\GL\glxew.h" />
+    <ClInclude Include="ThirdParty\GL\glxext.h" />
+    <ClInclude Include="ThirdParty\GL\wglew.h" />
+    <ClInclude Include="ThirdParty\GL\wglext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp" />

@@ -22,6 +22,9 @@
     <Filter Include="Source Files\Source">
       <UniqueIdentifier>{63672ed1-3d0b-4751-a67b-eb80e8450cc4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ThirdParty\GL">
+      <UniqueIdentifier>{9ec1f387-1ed4-4a37-8130-5df4ffb157ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\IWindow.h">
@@ -38,6 +41,27 @@
     </ClInclude>
     <ClInclude Include="Include\Macros.h">
       <Filter>Header Files\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\GL\glew.h">
+      <Filter>Header Files\ThirdParty\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\GL\glext.h">
+      <Filter>Header Files\ThirdParty\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\GL\glxew.h">
+      <Filter>Header Files\ThirdParty\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\GL\glxext.h">
+      <Filter>Header Files\ThirdParty\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\GL\wglew.h">
+      <Filter>Header Files\ThirdParty\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\GL\wglext.h">
+      <Filter>Header Files\ThirdParty\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\GL\glcorearb.h">
+      <Filter>Header Files\ThirdParty\GL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
