@@ -1,8 +1,11 @@
 #include "../Include/Window_Windows.h"
+#include "../ThirdParty/ini/ini.h"
 #include <iostream>
 
-int main()
+int main(int argsc, char** argsv)
 {
+    ini_t *config = ini_load("./Engine.ini");
+
     XO::Window window;
     window.OnWindowCreated.Add([] ()
     {

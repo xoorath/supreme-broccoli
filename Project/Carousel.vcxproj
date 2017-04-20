@@ -234,9 +234,11 @@
     <ClInclude Include="ThirdParty\GL\glxext.h" />
     <ClInclude Include="ThirdParty\GL\wglew.h" />
     <ClInclude Include="ThirdParty\GL\wglext.h" />
+    <ClInclude Include="ThirdParty\ini\ini.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="ThirdParty\ini\ini.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

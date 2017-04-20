@@ -25,6 +25,15 @@
     <Filter Include="Header Files\ThirdParty\GL">
       <UniqueIdentifier>{9ec1f387-1ed4-4a37-8130-5df4ffb157ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ThirdParty">
+      <UniqueIdentifier>{24e2ee70-64bf-4e85-8ad0-178a114a8209}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ThirdParty\ini">
+      <UniqueIdentifier>{5f558bd1-0b6c-439c-9b98-55a122df22a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ThirdParty\ini">
+      <UniqueIdentifier>{5fa5edf2-43f6-4d8c-b673-ada2f83ca113}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\IWindow.h">
@@ -63,10 +72,16 @@
     <ClInclude Include="ThirdParty\GL\glcorearb.h">
       <Filter>Header Files\ThirdParty\GL</Filter>
     </ClInclude>
+    <ClInclude Include="ThirdParty\ini\ini.h">
+      <Filter>Header Files\ThirdParty\ini</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
       <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\ini\ini.cpp">
+      <Filter>Source Files\ThirdParty\ini</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
