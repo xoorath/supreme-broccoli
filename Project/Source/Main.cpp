@@ -4,7 +4,9 @@
 
 int main(int argsc, char** argsv)
 {
-    ini_t *config = ini_load("./Engine.ini");
+    ini_t *engineSettings = ini_load("./Engine.ini");
+
+    const char* assetsPath = ini_get(engineSettings, "paths", "Assets");
 
     XO::Window window;
     window.OnWindowCreated.Add([] ()

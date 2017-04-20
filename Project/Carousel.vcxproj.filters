@@ -84,4 +84,9 @@
       <Filter>Source Files\ThirdParty\ini</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Builds\Shared\Engine.ini">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
