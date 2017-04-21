@@ -1,6 +1,6 @@
-#include "../Include/Config.h"
+#include <Include/Assets/Config.h>
 
-#include "../ThirdParty/ini/ini.h"
+#include <ThirdParty/ini/ini.h>
 
 namespace XO
 {

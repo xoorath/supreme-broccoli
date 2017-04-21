@@ -1,11 +1,12 @@
-#include "../Include/Window.h"
+#include <Include/Window.h>
 
-#include "../Include/Log.h"
-#include "../Include/TextHelpers.h"
+#include <Include/Assets/AssetManager.h>
+#include <Include/Log.h>
+#include <Include/TextHelpers.h>
 
 #if defined(GAME_WINDOWS)
-#include "../ThirdParty/GL/glew.h"
-#include "../ThirdParty/GL/wglew.h"
+#include <ThirdParty/GL/glew.h>
+#include <ThirdParty/GL/wglew.h>
 #include <GL/GL.h>
 #include <windowsx.h>
 #include <Commdlg.h>
@@ -19,11 +20,9 @@ class WindowImpl {
 public:
     static WindowImpl* Self;
     Window& Owner;
-    Config& EngineConfig;
 
-    WindowImpl(Window& owner, Config& config) 
-        : Owner(owner)
-        , EngineConfig(config) {
+    WindowImpl(Window& owner) 
+        : Owner(owner) {
         Self = this;
     }
 
@@ -48,16 +47,16 @@ public:
     }
 
     bool ConfigBool(const char* name, bool defaultVal) const {
-        return strcmp("true", EngineConfig.Get("Window", name, defaultVal ? "true" : "false"))  == 0;
+        return strcmp("true", XO::AssetManager::EngineConfig("Window", name, defaultVal ? "true" : "false"))  == 0;
     }
 
     int32 ConfigInt(const char* name, int32 defaultVal) const {
-        auto confValue = EngineConfig.Get("Window", name);
+        auto confValue = XO::AssetManager::EngineConfig("Window", name);
         return confValue ? atoi(confValue) : defaultVal;
     }
 
     const char* ConfigStr(const char* name, const char* defaultVal) const {
-        return EngineConfig.Get("Window", name, defaultVal);
+        return XO::AssetManager::EngineConfig("Window", name, defaultVal);
     }
 
     ////////////////////////////////////////////////////////////////////////// API layer
@@ -295,10 +294,9 @@ public:
 
 WindowImpl* WindowImpl::Self = nullptr;
 
-
-Window::Window(Config& engineConfig)
+Window::Window()
 {
-    Impl = new WindowImpl(*this, engineConfig);
+    Impl = new WindowImpl(*this);
 }
 
 Window::~Window() {

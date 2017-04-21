@@ -1,9 +1,8 @@
-#include "../Include/Config.h"
-#include "../Include/Log.h"
-#include "../Include/Renderer.h"
-#include "../Include/Shader.h"
-#include "../Include/Texture2D.h"
-#include "../Include/Window.h"
+#include <Include/Assets/AssetManager.h>
+#include <Include/Log.h>
+#include <Include/Renderer.h>
+#include <Include/Window.h>
+
 #include <iostream>
 
 #if defined(_MSC_VER)
@@ -15,20 +14,19 @@ int main(int argsc, char** argsv) {
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-    XO::Config engineConfig("./Engine.ini");
-    XO::LogManager logManager(engineConfig.Get("Paths", "EasyLoggingCppConfig", "./EasyLog.config"));
+    //////////////////////////////////////////////////////////////////////////
+    // Core system initializations.
+    XO::AssetManager    assetManager;
+    XO::LogManager      logManager(XO::AssetManager::EngineConfig("Paths", "EasyLoggingCppConfig", "./EasyLog.config"));
+    XO::Window          window;
+    XO::Renderer        renderer;
 
-    // not very elegant. Prep all assets in one place.
-    XO::ShaderProgram::Prepare(engineConfig);
-    XO::Texture2DManager textureManager(engineConfig);
-
-    XO::Window window(engineConfig);
-    XO::Renderer renderer;
+    //////////////////////////////////////////////////////////////////////////
     bool windowIsOpen = true;
 
     window.OnWindowCreated.Add([&renderer] ()
     {
-        renderer.Init();
+        renderer.Init(); // we don't use raii for the renderer since it depends on the window creation.
         renderer.DebugLog();
         xoLog("Window created.");
     });
@@ -41,10 +39,7 @@ int main(int argsc, char** argsv) {
 
     if (window.Create())
     {
-
         xoLog("Carousel Application Starting.");
-        
-
         while (windowIsOpen) {
             renderer.Render();
             window.Update();

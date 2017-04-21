@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../ThirdParty/easylogging++/easylogging++.h"
+#include <ThirdParty/easylogging++/easylogging++.h>
 
 #define xoFatal(msg)        LOG(FATAL) << msg;
 #define xoFatalIf(cnd, msg) if(cnd) { LOG(FATAL) << msg;}

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include <Include/Types.h>
 
 namespace XO {
 
@@ -28,9 +28,6 @@ public:
 
     // Retrieves a uniform location
     Uniform operator[](String UniformLocation) const;
-
-    // TODO: centralize with other asset prepping.
-    static void Prepare(class Config& engineConfig);
 
 private:
     static uint32 LastUsedProgramID;

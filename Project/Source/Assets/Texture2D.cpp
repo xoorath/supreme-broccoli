@@ -1,44 +1,17 @@
-#include "../Include/Texture2D.h"
+#include <Include/Assets/Texture2D.h>
 
-#include "../Include/Config.h"
-#include "../Include/Log.h"
-#include "../ThirdParty/FreeImage/FreeImage.h"
+#include <Include/Assets/AssetManager.h>
+#include <Include/Assets/Config.h>
+#include <Include/Log.h>
+#include <ThirdParty/FreeImage/FreeImage.h>
 
 #if defined(GAME_WINDOWS)
-#include "../ThirdParty/GL/glew.h"
-#include "../ThirdParty/GL/wglew.h"
+#include <ThirdParty/GL/glew.h>
+#include <ThirdParty/GL/wglew.h>
 #include <GL/GL.h>
 #endif
 
 namespace XO {
-
-static String AssetsBasePath;
-Texture2DManager* Texture2DManager::Instance = nullptr;
-
-Texture2DManager::Texture2DManager(class Config& engineConfig) {
-    xoFatalIf(Instance, "Texture2DManager already exists");
-    AssetsBasePath = engineConfig.Get("Paths", "Assets", "../../Assets");
-    FreeImage_Initialise();
-}
-
-Texture2DManager::~Texture2DManager() {
-    FreeImage_DeInitialise();
-
-    for (auto* tex : Textures) {
-        tex->Unload();
-    }
-}
-
-void Texture2DManager::AddTexture(Texture2D* texture) {
-    Textures.push_back(texture);
-}
-
-void Texture2DManager::RemoveTexture(Texture2D* texture) {
-    auto found = std::find(Textures.begin(), Textures.end(), texture);
-    if (found != Textures.end()) {
-        Textures.erase(found);
-    }
-}
 
 Texture2D::Texture2D()
     : TextureID(-1) {
@@ -49,8 +22,10 @@ Texture2D::~Texture2D() {
     Unload();
 }
 
-void Texture2D::Load(const char* path) {
-    String fullPath = AssetsBasePath + "/" + path;
+void Texture2D::Load(String path) {
+    // TODO: proper path joining/resolution.
+    String fullPath(AssetManager::AssetsRoot());
+    fullPath += "/" + path;
 
     FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
     FIBITMAP* dib = nullptr;
@@ -87,19 +62,7 @@ void Texture2D::Load(const char* path) {
     glGenTextures(1, &TextureID);
     glBindTexture(GL_TEXTURE_2D, TextureID);
     
-    //for (int i = 0; i < width*height*4; i+=4) {
-    //    BYTE b = bits[i+0];
-    //    BYTE g = bits[i+1];
-    //    BYTE r = bits[i+2];
-    //    BYTE a = bits[i+3];
-    //    bits[i + 0] = r;
-    //    bits[i + 1] = g;
-    //    bits[i + 2] = b;
-    //    bits[i + 3] = a;
-    //}
-
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bits);
-
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);

@@ -1,4 +1,4 @@
-#include "../Include/Log.h"
+#include <Include/Log.h>
 
 INITIALIZE_EASYLOGGINGPP
 

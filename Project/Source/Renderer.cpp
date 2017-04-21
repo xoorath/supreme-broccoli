@@ -1,12 +1,12 @@
-#include "../Include/Renderer.h"
+#include <Include/Renderer.h>"
 
-#include "../Include/Log.h"
-#include "../Include/Shader.h"
-#include "../Include/Texture2D.h"
+#include <Include/Assets/Shader.h>
+#include <Include/Assets/Texture2D.h>
+#include <Include/Log.h>
 
 #if defined(GAME_WINDOWS)
-#include "../ThirdParty/GL/glew.h"
-#include "../ThirdParty/GL/wglew.h"
+#include <ThirdParty/GL/glew.h>
+#include <ThirdParty/GL/wglew.h>
 #include <GL/GL.h>
 #endif
 

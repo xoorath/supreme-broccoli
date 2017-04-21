@@ -49,6 +49,12 @@
     <Filter Include="Resource Files\Textures">
       <UniqueIdentifier>{9cf419cf-6ac7-4ec7-b5c7-6101f6749aab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Include\Assets">
+      <UniqueIdentifier>{97290fd6-3978-450e-b0dc-0c55e3c679fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Assets">
+      <UniqueIdentifier>{353d0b17-1068-44f0-9a0f-3f05b98ada4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Types.h">
@@ -93,16 +99,10 @@
     <ClInclude Include="Include\Log.h">
       <Filter>Header Files\Include</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Config.h">
-      <Filter>Header Files\Include</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Renderer.h">
       <Filter>Header Files\Include</Filter>
     </ClInclude>
     <ClInclude Include="Include\TextHelpers.h">
-      <Filter>Header Files\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Shader.h">
       <Filter>Header Files\Include</Filter>
     </ClInclude>
     <ClInclude Include="ThirdParty\objload\objload.h">
@@ -111,8 +111,17 @@
     <ClInclude Include="ThirdParty\FreeImage\FreeImage.h">
       <Filter>Header Files\ThirdParty\FreeImage</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Texture2D.h">
-      <Filter>Header Files\Include</Filter>
+    <ClInclude Include="Include\Assets\AssetManager.h">
+      <Filter>Header Files\Include\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Assets\Config.h">
+      <Filter>Header Files\Include\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Assets\Shader.h">
+      <Filter>Header Files\Include\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Assets\Texture2D.h">
+      <Filter>Header Files\Include\Assets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -131,17 +140,20 @@
     <ClCompile Include="Source\Log.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Config.cpp">
-      <Filter>Source Files\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Renderer.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader.cpp">
-      <Filter>Source Files\Source</Filter>
+    <ClCompile Include="Source\Assets\AssetManager.cpp">
+      <Filter>Source Files\Source\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Texture2D.cpp">
-      <Filter>Source Files\Source</Filter>
+    <ClCompile Include="Source\Assets\Config.cpp">
+      <Filter>Source Files\Source\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Assets\Shader.cpp">
+      <Filter>Source Files\Source\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Assets\Texture2D.cpp">
+      <Filter>Source Files\Source\Assets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

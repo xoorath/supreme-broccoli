@@ -1,15 +1,14 @@
 #pragma once
 
-#include "Types.h"
-#include "Subscription.h"
-#include "Config.h"
+#include <Include/Types.h>
+#include <Include/Subscription.h>
 
 namespace XO
 {
     class Window
     {
     public:
-        Window(Config& engineConfig);
+        Window();
         ~Window();
 
         bool Create();

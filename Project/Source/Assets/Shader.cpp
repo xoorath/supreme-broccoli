@@ -1,14 +1,14 @@
-#include "../Include/Shader.h"
+#include <Include/Assets/Shader.h>
 
-#include "../Include/Config.h"
-#include "../Include/Log.h"
-#include "../Include/Types.h"
+#include <Include/Assets/AssetManager.h>
+#include <Include/Log.h>
+#include <Include/Types.h>
 
 #include <fstream>
 
 #if defined(GAME_WINDOWS)
-#include "../ThirdParty/GL/glew.h"
-#include "../ThirdParty/GL/wglew.h"
+#include <ThirdParty/GL/glew.h>
+#include <ThirdParty/GL/wglew.h>
 #include <GL/GL.h>
 #endif
 
@@ -16,11 +16,11 @@
 namespace XO {
 static_assert(sizeof(GLuint) == sizeof(uint32), "Size of GLuint is not what was expected by Shader.h");
 
-static String AssetsBasePath;
 uint32 ShaderProgram::LastUsedProgramID = -1;
 
 String GetProgramCode(const char* programPath) {
-    std::ifstream stream(AssetsBasePath + "/" + programPath);
+    String fullpath(AssetManager::AssetsRoot());
+    std::ifstream stream(fullpath + "/" + programPath);
     if (!stream.is_open()) {
         xoFatal("Could not open shader at path " << programPath << "!");
         return "";
@@ -140,10 +140,6 @@ ShaderProgram::Uniform ShaderProgram::operator[](String UniformLocation) const {
 
 bool ShaderProgram::IsValid() const {
     return ProgramID != -1;
-}
-
-void ShaderProgram::Prepare(Config& engineConfig) {
-    AssetsBasePath = engineConfig.Get("Paths", "Assets", "../../Assets");
 }
 
 }
