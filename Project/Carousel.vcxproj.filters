@@ -43,6 +43,12 @@
     <Filter Include="Header Files\ThirdParty\FreeImage">
       <UniqueIdentifier>{517d82f3-59a4-4dc9-a89c-1949ba10a82f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{f1825eb7-7e2b-44e8-9c5d-d90c0c5ee5dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{9cf419cf-6ac7-4ec7-b5c7-6101f6749aab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Types.h">
@@ -145,5 +151,22 @@
     <None Include="..\Builds\Shared\Easylog.config">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\Assets\Shaders\Simple.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\Assets\Shaders\Simple.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Assets\Textures\Placeholder.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\Assets\Textures\Testing.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\Assets\Textures\Red2x2.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

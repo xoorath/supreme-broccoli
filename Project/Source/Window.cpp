@@ -111,6 +111,18 @@ public:
             h = ConfigInt("Height", 720);
         x -= w / 2;
         y -= h / 2;
+        // HACK, REMOVE ME
+        // HACK, REMOVE ME
+        // HACK, REMOVE ME
+        // HACK, REMOVE ME
+        // HACK, REMOVE ME
+        // HACK, REMOVE ME
+        // HACK, REMOVE ME
+        // HACK, REMOVE ME
+        x -= desktop.right;
+        // End HACK
+
+
         RECT sysRect = { x, y, w, h };
 
         ensure(AdjustWindowRectEx(&sysRect, style, FALSE, styleEx), "AdjustWindowRectEx failed.");

@@ -280,8 +280,15 @@
     <ClCompile Include="ThirdParty\ini\ini.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Assets\Shaders\Simple.frag" />
+    <None Include="..\Assets\Shaders\Simple.vert" />
     <None Include="..\Builds\Shared\Easylog.config" />
     <None Include="..\Builds\Shared\Engine.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Assets\Textures\Placeholder.png" />
+    <Image Include="..\Assets\Textures\Red2x2.png" />
+    <Image Include="..\Assets\Textures\Testing.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

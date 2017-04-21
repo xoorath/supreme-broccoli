@@ -28,17 +28,21 @@ public:
         glDepthFunc(GL_LESS);
         glEnable(GL_CULL_FACE);
 
-        Placeholder.Load("Textures/Placeholder.png");
+        Placeholder.Load("Textures/Testing.png");
         
 
         MVP = SimpleShader["MVP"];
-        Sampler = SimpleShader["sampler"];
+        Sampler = SimpleShader["myTextureSampler"];
 
 
         static const GLfloat g_vertex_buffer_data[] = {
-            -1.0f, -1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            0.0f,  1.0f, 0.0f,
+            -1, 1, 0,
+            -1, -1, 0,
+            1, -1, 0,
+
+            1, -1, 0,
+            1, 1, 0,
+            -1, 1, 0
         };
         
         glGenVertexArrays(1, &vao);
@@ -48,9 +52,13 @@ public:
         glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
         static const GLfloat g_uv_buffer_data[] = {
-            0.0f, 0.0f,
-            0.5f, 1.0f,
-            0.0f,  1.0f
+            0, 1,
+            0, 0,
+            1, 0,
+
+            1, 0,
+            1, 1,
+            0, 1
         };
 
         glGenVertexArrays(1, &uao);
@@ -73,11 +81,6 @@ public:
         SimpleShader.Use();
 
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, Placeholder.GetTextureID());
-        // Set our "myTextureSampler" sampler to user Texture Unit 0
-        Sampler.SetTextureUnit(0);
-
         static  float mvp[] = {
             1, 0, 0, 0,
             0, 1, 0, 0,
@@ -86,6 +89,11 @@ public:
         };
 
         MVP.SetAsMatrix4x4(mvp);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, Placeholder.GetTextureID());
+        // Set our "myTextureSampler" sampler to user Texture Unit 0
+        Sampler.SetTextureUnit(0);
 
 
         // 1rst attribute buffer : vertices
@@ -116,7 +124,7 @@ public:
         
         
         // Draw the triangle !
-        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
+        glDrawArrays(GL_TRIANGLES, 0, 6); // 3 indices starting at 0 -> 1 triangle
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
 

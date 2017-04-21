@@ -127,7 +127,7 @@ ShaderProgram::~ShaderProgram() {
 }
 
 void ShaderProgram::Use() {
-    if (LastUsedProgramID != ProgramID) 
+    //if (LastUsedProgramID != ProgramID) 
     {
         glUseProgram((GLuint)ProgramID);
         LastUsedProgramID = ProgramID;

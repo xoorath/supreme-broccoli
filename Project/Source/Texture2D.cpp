@@ -53,8 +53,8 @@ void Texture2D::Load(const char* path) {
     String fullPath = AssetsBasePath + "/" + path;
 
     FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
-    FIBITMAP *dib(0);
-    BYTE* bits(0);
+    FIBITMAP* dib = nullptr;
+    BYTE* bits = nullptr;
     uint32 
         width = 0, 
         height = 0;
@@ -70,16 +70,43 @@ void Texture2D::Load(const char* path) {
 
     if (!dib)
         return;
+    
+    uint32 bpp = FreeImage_GetBPP(dib);
+    if (bpp != 32)
+    {
+        dib = FreeImage_ConvertTo32Bits(dib);
+    }
 
-    bits = FreeImage_GetBits(dib);
     width = FreeImage_GetWidth(dib);
     height = FreeImage_GetHeight(dib);
-    if ((bits == 0) || (width == 0) || (height == 0))
+    if ((width == 0) || (height == 0))
         return;
+
+    bits = FreeImage_GetBits(dib);
 
     glGenTextures(1, &TextureID);
     glBindTexture(GL_TEXTURE_2D, TextureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, bits);
+    
+    //for (int i = 0; i < width*height*4; i+=4) {
+    //    BYTE b = bits[i+0];
+    //    BYTE g = bits[i+1];
+    //    BYTE r = bits[i+2];
+    //    BYTE a = bits[i+3];
+    //    bits[i + 0] = r;
+    //    bits[i + 1] = g;
+    //    bits[i + 2] = b;
+    //    bits[i + 3] = a;
+    //}
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bits);
+
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glGenerateMipmap(GL_TEXTURE_2D);
 
     FreeImage_Unload(dib);
 }
