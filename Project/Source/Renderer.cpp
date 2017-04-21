@@ -2,6 +2,7 @@
 
 #include "../Include/Log.h"
 #include "../Include/Shader.h"
+#include "../Include/Texture2D.h"
 
 #if defined(GAME_WINDOWS)
 #include "../ThirdParty/GL/glew.h"
@@ -11,18 +12,29 @@
 
 namespace XO {
 
-#define BREAK_AFTER_BAD_GL() if(glGetError() != GL_NO_ERROR) __debugbreak();
-
 class RendererImpl {
 public:
     ShaderProgram SimpleShader;
-    GLuint vertexbuffer;
-    GLuint vao;
+    ShaderProgram::Uniform MVP;
+    ShaderProgram::Uniform Sampler;
+    Texture2D Placeholder;
+    GLuint vertexbuffer, uvbuffer;
+    GLuint vao, uao;
 
     RendererImpl()
     : SimpleShader("Shaders/Simple.vert", "Shaders/Simple.frag") {
         glClearColor(100.f / 255.f, 149.f / 255.f, 239.f / 255.f, 1.0);
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+        glEnable(GL_CULL_FACE);
+
+        Placeholder.Load("Textures/Placeholder.png");
         
+
+        MVP = SimpleShader["MVP"];
+        Sampler = SimpleShader["sampler"];
+
+
         static const GLfloat g_vertex_buffer_data[] = {
             -1.0f, -1.0f, 0.0f,
             1.0f, -1.0f, 0.0f,
@@ -35,12 +47,21 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
-        GLuint err;
-        while ((err = glGetError()) != GL_NO_ERROR)
-        {
-            //Process/log the error.
-            __debugbreak();
-        }
+        static const GLfloat g_uv_buffer_data[] = {
+            0.0f, 0.0f,
+            0.5f, 1.0f,
+            0.0f,  1.0f
+        };
+
+        glGenVertexArrays(1, &uao);
+        glBindVertexArray(uao);
+        glGenBuffers(1, &uvbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
+
+
+        ReportAnyGLErrors();
+
     }
 
     ~RendererImpl() {
@@ -48,14 +69,28 @@ public:
 
     void Render() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        BREAK_AFTER_BAD_GL();
+
         SimpleShader.Use();
-        BREAK_AFTER_BAD_GL();
+
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, Placeholder.GetTextureID());
+        // Set our "myTextureSampler" sampler to user Texture Unit 0
+        Sampler.SetTextureUnit(0);
+
+        static  float mvp[] = {
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        };
+
+        MVP.SetAsMatrix4x4(mvp);
+
+
         // 1rst attribute buffer : vertices
         glEnableVertexAttribArray(0);
-        BREAK_AFTER_BAD_GL();
         glBindBuffer(GL_ARRAY_BUFFER, vao);
-        BREAK_AFTER_BAD_GL();
         glVertexAttribPointer(
             0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
             3,                  // size
@@ -64,12 +99,28 @@ public:
             0,                  // stride
             (void*)0            // array buffer offset
             );
-        BREAK_AFTER_BAD_GL();
+        
+        
+        // 2nd attribute buffer : UVs
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, uao);
+        glVertexAttribPointer(
+            1,                                // attribute
+            2,                                // size
+            GL_FLOAT,                         // type
+            GL_FALSE,                         // normalized?
+            0,                                // stride
+            (void*)0                          // array buffer offset
+            );
+        
+        
+        
         // Draw the triangle !
         glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
-        BREAK_AFTER_BAD_GL();
         glDisableVertexAttribArray(0);
-        BREAK_AFTER_BAD_GL();
+        glDisableVertexAttribArray(1);
+
+        ReportAnyGLErrors();
     }
 
     void DebugLog() {
@@ -80,12 +131,32 @@ public:
         << "\nGL_VERSION                   | " << glGetString(GL_VERSION)
         << "\nGL_SHADING_LANGUAGE_VERSION  | " << glGetString(GL_SHADING_LANGUAGE_VERSION)
         << "\n================================================================");
+    }
 
-        GLuint err;
-        while ((err = glGetError()) != GL_NO_ERROR)
-        {
-            //Process/log the error.
-            __debugbreak();
+private:
+    void ReportAnyGLErrors() {
+        auto err = glGetError();
+        if (err != GL_NO_ERROR) {
+            switch (err) {
+                case GL_INVALID_ENUM:
+                    xoErr("OpenGL Error: Invalid enum. " << err);
+                    break;
+                case GL_INVALID_VALUE:
+                    xoErr("OpenGL Error: Invalid value. " << err);
+                    break;
+                case GL_INVALID_OPERATION:
+                    xoErr("OpenGL Error: Invalid operation. " << err);
+                    break;
+                case GL_STACK_OVERFLOW:
+                    xoErr("OpenGL Error: Stack overflow. " << err);
+                    break;
+                case GL_STACK_UNDERFLOW:
+                    xoErr("OpenGL Error: Stack underflow. " << err);
+                    break;
+                case GL_OUT_OF_MEMORY:
+                    xoErr("OpenGL Error: Out of memory. " << err);
+                    break;
+            }
         }
     }
 };

@@ -137,7 +137,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32.lib;$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32.lib;$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32s.lib;opengl32.lib;$(SolutionDir)ThirdParty\Lib\FreeImage\$(Platform)_$(Configuration)\FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <CustomBuildStep>
@@ -154,7 +154,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32.lib;$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32.lib;$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32s.lib;opengl32.lib;$(SolutionDir)ThirdParty\Lib\FreeImage\$(Platform)_$(Configuration)\FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <CustomBuildStep>
@@ -175,7 +175,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32.lib;$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32.lib;$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32s.lib;opengl32.lib;$(SolutionDir)ThirdParty\Lib\FreeImage\$(Platform)_$(Configuration)\FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <CustomBuildStep>
@@ -196,7 +196,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32.lib;$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32.lib;$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32s.lib;opengl32.lib;$(SolutionDir)ThirdParty\Lib\FreeImage\$(Platform)_$(Configuration)\FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <CustomBuildStep>
@@ -217,7 +217,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32.lib;$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32.lib;$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32s.lib;opengl32.lib;$(SolutionDir)ThirdParty\Lib\FreeImage\$(Platform)_$(Configuration)\FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <CustomBuildStep>
@@ -238,7 +238,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32.lib;$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32.lib;$(SolutionDir)ThirdParty\Lib\GL\$(Platform)_$(Configuration)\glew32s.lib;opengl32.lib;$(SolutionDir)ThirdParty\Lib\FreeImage\$(Platform)_$(Configuration)\FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <CustomBuildStep>
@@ -251,11 +251,13 @@
     <ClInclude Include="Include\Renderer.h" />
     <ClInclude Include="Include\Shader.h" />
     <ClInclude Include="Include\TextHelpers.h" />
+    <ClInclude Include="Include\Texture2D.h" />
     <ClInclude Include="Include\Window.h" />
     <ClInclude Include="Include\Macros.h" />
     <ClInclude Include="Include\Subscription.h" />
     <ClInclude Include="Include\Types.h" />
     <ClInclude Include="ThirdParty\easylogging++\easylogging++.h" />
+    <ClInclude Include="ThirdParty\FreeImage\FreeImage.h" />
     <ClInclude Include="ThirdParty\GL\glcorearb.h" />
     <ClInclude Include="ThirdParty\GL\glew.h" />
     <ClInclude Include="ThirdParty\GL\glext.h" />
@@ -264,6 +266,7 @@
     <ClInclude Include="ThirdParty\GL\wglew.h" />
     <ClInclude Include="ThirdParty\GL\wglext.h" />
     <ClInclude Include="ThirdParty\ini\ini.h" />
+    <ClInclude Include="ThirdParty\objload\objload.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Config.cpp" />
@@ -272,6 +275,7 @@
     <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\Subscription.cpp" />
+    <ClCompile Include="Source\Texture2D.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClCompile Include="ThirdParty\ini\ini.cpp" />
   </ItemGroup>

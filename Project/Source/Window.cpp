@@ -85,8 +85,6 @@ public:
         Hinstance = ::GetModuleHandle(NULL);
         ensure(Hinstance != HINSTANCE(0), "GetModuleHandle Failed");
 
-        Owner.OnWindowCreated.Execute();
-
         WNDCLASSEX wc;
         wc.cbSize = sizeof(WNDCLASSEX);
         wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -247,12 +245,7 @@ public:
             glRenderbufferStorageMultisample = glRenderbufferStorageMultisampleEXT;
         }
 
-        GLuint err;
-        while ((err = glGetError()) != GL_NO_ERROR)
-        {
-            //Process/log the error.
-            __debugbreak();
-        }
+        Owner.OnWindowCreated.Execute();
         return true;
     }
 

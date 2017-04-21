@@ -2,6 +2,7 @@
 #include "../Include/Log.h"
 #include "../Include/Renderer.h"
 #include "../Include/Shader.h"
+#include "../Include/Texture2D.h"
 #include "../Include/Window.h"
 #include <iostream>
 
@@ -9,8 +10,7 @@
 #define VISUAL_STUDIO_LEAK_DETECTION 1
 #endif
 
-int main(int argsc, char** argsv)
-{
+int main(int argsc, char** argsv) {
 #ifdef VISUAL_STUDIO_LEAK_DETECTION
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
@@ -18,15 +18,19 @@ int main(int argsc, char** argsv)
     XO::Config engineConfig("./Engine.ini");
     XO::LogManager logManager(engineConfig.Get("Paths", "EasyLoggingCppConfig", "./EasyLog.config"));
 
+    // not very elegant. Prep all assets in one place.
     XO::ShaderProgram::Prepare(engineConfig);
+    XO::Texture2DManager textureManager(engineConfig);
 
     XO::Window window(engineConfig);
     XO::Renderer renderer;
     bool windowIsOpen = true;
 
-    window.OnWindowCreated.Add([] ()
+    window.OnWindowCreated.Add([&renderer] ()
     {
-        xoLog("Window opened.");
+        renderer.Init();
+        renderer.DebugLog();
+        xoLog("Window created.");
     });
 
     window.OnWindowClosed.Add([&windowIsOpen] ()
@@ -39,8 +43,7 @@ int main(int argsc, char** argsv)
     {
 
         xoLog("Carousel Application Starting.");
-        renderer.Init();
-        renderer.DebugLog();
+        
 
         while (windowIsOpen) {
             renderer.Render();

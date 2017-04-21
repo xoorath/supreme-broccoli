@@ -37,6 +37,12 @@
     <Filter Include="Header Files\ThirdParty\easylogging++">
       <UniqueIdentifier>{688b31af-aaba-4163-bd9f-47184bf68839}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ThirdParty\objload">
+      <UniqueIdentifier>{af58c5b0-3cb5-47ae-aba6-6a26d2b82763}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ThirdParty\FreeImage">
+      <UniqueIdentifier>{517d82f3-59a4-4dc9-a89c-1949ba10a82f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Types.h">
@@ -93,6 +99,15 @@
     <ClInclude Include="Include\Shader.h">
       <Filter>Header Files\Include</Filter>
     </ClInclude>
+    <ClInclude Include="ThirdParty\objload\objload.h">
+      <Filter>Header Files\ThirdParty\objload</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\FreeImage\FreeImage.h">
+      <Filter>Header Files\ThirdParty\FreeImage</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Texture2D.h">
+      <Filter>Header Files\Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -117,6 +132,9 @@
       <Filter>Source Files\Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Shader.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Texture2D.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
   </ItemGroup>

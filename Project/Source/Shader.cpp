@@ -33,6 +33,29 @@ String GetProgramCode(const char* programPath) {
     return code;
 }
 
+ShaderProgram::Uniform::Uniform(uint32 program, uint32 location) 
+    : ProgramID(program)
+    , UniformLocation(location) {
+}
+
+ShaderProgram::Uniform::Uniform()
+    : ProgramID(-1)
+    , UniformLocation(-1) {
+
+}
+
+void ShaderProgram::Uniform::SetAsMatrix4x4(float32* data) {
+    if (UniformLocation != -1) {
+        glUniformMatrix4fv(UniformLocation, 1, GL_FALSE, data);
+    }
+}
+
+void ShaderProgram::Uniform::SetTextureUnit(uint32 unit) {
+    if (UniformLocation != -1) {
+        glUniform1i(UniformLocation, unit);
+    }
+}
+
 ShaderProgram::ShaderProgram(const char* vertShaderPath, const char* fragShaderPath) {
     ProgramID = -1;
 
@@ -104,11 +127,15 @@ ShaderProgram::~ShaderProgram() {
 }
 
 void ShaderProgram::Use() {
-    //if (LastUsedProgramID != ProgramID) 
+    if (LastUsedProgramID != ProgramID) 
     {
         glUseProgram((GLuint)ProgramID);
         LastUsedProgramID = ProgramID;
     }
+}
+
+ShaderProgram::Uniform ShaderProgram::operator[](String UniformLocation) const {
+    return Uniform(ProgramID, glGetUniformLocation(ProgramID, UniformLocation.c_str()));
 }
 
 bool ShaderProgram::IsValid() const {
