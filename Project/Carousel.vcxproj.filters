@@ -34,14 +34,11 @@
     <Filter Include="Header Files\ThirdParty\ini">
       <UniqueIdentifier>{5fa5edf2-43f6-4d8c-b673-ada2f83ca113}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ThirdParty\easylogging++">
+      <UniqueIdentifier>{688b31af-aaba-4163-bd9f-47184bf68839}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\IWindow.h">
-      <Filter>Header Files\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Window_Windows.h">
-      <Filter>Header Files\Include</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Types.h">
       <Filter>Header Files\Include</Filter>
     </ClInclude>
@@ -75,6 +72,18 @@
     <ClInclude Include="ThirdParty\ini\ini.h">
       <Filter>Header Files\ThirdParty\ini</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Window.h">
+      <Filter>Header Files\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\easylogging++\easylogging++.h">
+      <Filter>Header Files\ThirdParty\easylogging++</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Log.h">
+      <Filter>Header Files\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Config.h">
+      <Filter>Header Files\Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -83,9 +92,24 @@
     <ClCompile Include="ThirdParty\ini\ini.cpp">
       <Filter>Source Files\ThirdParty\ini</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Window.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Subscription.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Log.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Config.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Builds\Shared\Engine.ini">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Builds\Shared\Easylog.config">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

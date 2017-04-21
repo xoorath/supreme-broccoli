@@ -1,26 +1,44 @@
-#include "../Include/Window_Windows.h"
-#include "../ThirdParty/ini/ini.h"
+#include "../Include/Config.h"
+#include "../Include/Log.h"
+#include "../Include/Window.h"
 #include <iostream>
+
+#if defined(_MSC_VER)
+#define VISUAL_STUDIO_LEAK_DETECTION 1
+#endif
 
 int main(int argsc, char** argsv)
 {
-    ini_t *engineSettings = ini_load("./Engine.ini");
+#ifdef VISUAL_STUDIO_LEAK_DETECTION
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
 
-    const char* assetsPath = ini_get(engineSettings, "paths", "Assets");
+    XO::Config engineConfig("./Engine.ini");
+    XO::LogManager logManager(engineConfig.Get("Paths", "EasyLoggingCppConfig", "./EasyLog.config"));
 
-    XO::Window window;
+    xoLog("Carousel Application Starting.");
+
+    XO::Window window(engineConfig);
+    bool windowIsOpen = true;
+
     window.OnWindowCreated.Add([] ()
     {
-        std::cout << "Window created!";
+        xoLog("Window opened.");
     });
 
-    window.OnWindowClosed.Add([] ()
+    window.OnWindowClosed.Add([&windowIsOpen] ()
     {
-        std::cout << "Window closed!";
+        windowIsOpen = false;
+        xoLog("Window closed.");
     });
 
+    window.Create();
 
-    window.Create("aw yeah", 1280, 720);
-    window.Create("aw yeah", 1280, 720);
+    while (windowIsOpen) {
+        window.Update();
+    }
+
+
+    xoLog("Carousel Application Shutting Down.");
     return 0;
 }
