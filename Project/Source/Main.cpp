@@ -1,5 +1,7 @@
 #include "../Include/Config.h"
 #include "../Include/Log.h"
+#include "../Include/Renderer.h"
+#include "../Include/Shader.h"
 #include "../Include/Window.h"
 #include <iostream>
 
@@ -16,9 +18,10 @@ int main(int argsc, char** argsv)
     XO::Config engineConfig("./Engine.ini");
     XO::LogManager logManager(engineConfig.Get("Paths", "EasyLoggingCppConfig", "./EasyLog.config"));
 
-    xoLog("Carousel Application Starting.");
+    XO::ShaderProgram::Prepare(engineConfig);
 
     XO::Window window(engineConfig);
+    XO::Renderer renderer;
     bool windowIsOpen = true;
 
     window.OnWindowCreated.Add([] ()
@@ -32,12 +35,22 @@ int main(int argsc, char** argsv)
         xoLog("Window closed.");
     });
 
-    window.Create();
+    if (window.Create())
+    {
 
-    while (windowIsOpen) {
-        window.Update();
+        xoLog("Carousel Application Starting.");
+        renderer.Init();
+        renderer.DebugLog();
+
+        while (windowIsOpen) {
+            renderer.Render();
+            window.Update();
+        }
     }
-
+    else
+    {
+        xoLog("Carousel Application unable to start.");
+    }
 
     xoLog("Carousel Application Shutting Down.");
     return 0;

@@ -84,6 +84,15 @@
     <ClInclude Include="Include\Config.h">
       <Filter>Header Files\Include</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Renderer.h">
+      <Filter>Header Files\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\TextHelpers.h">
+      <Filter>Header Files\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Shader.h">
+      <Filter>Header Files\Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -102,6 +111,12 @@
       <Filter>Source Files\Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Config.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Shader.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
   </ItemGroup>

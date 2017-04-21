@@ -26,6 +26,7 @@ namespace XO
 #endif
 
     typedef std::string String;
+    typedef std::wstring WString;
 
     template<typename T>
     using Array = std::vector<T>;

@@ -1,6 +1,7 @@
 #include "../Include/Window.h"
 
 #include "../Include/Log.h"
+#include "../Include/TextHelpers.h"
 
 #if defined(GAME_WINDOWS)
 #include "../ThirdParty/GL/glew.h"
@@ -11,7 +12,7 @@
 #include <shellapi.h>
 #endif
 
-#define ensure(cnd, msg) {if(!(cnd)) { xoFatal(msg); __debugbreak(); Close(); return; }}
+#define ensure(cnd, msg) {if(!(cnd)) { xoFatal(msg); __debugbreak(); Close(); return false; }}
 
 namespace XO {
 class WindowImpl {
@@ -55,8 +56,12 @@ public:
         return confValue ? atoi(confValue) : defaultVal;
     }
 
+    const char* ConfigStr(const char* name, const char* defaultVal) const {
+        return EngineConfig.Get("Window", name, defaultVal);
+    }
+
     ////////////////////////////////////////////////////////////////////////// API layer
-    void Create() {
+    bool Create() {
         //////////////////////////////////////////////////////////////////////////
         // Window Setup
         //////////////////////////////////////////////////////////////////////////
@@ -64,6 +69,7 @@ public:
         if (ConfigBool("Fullscreen", false)) {
             style = WS_POPUP;
             styleEx = WS_EX_APPWINDOW;
+            ensure(false, "fullscreen not properly implemented");
         }
         else {
             if (ConfigBool("Resizable", false)) {
@@ -96,16 +102,23 @@ public:
         wc.lpszClassName = L"game";
         ensure(::RegisterClassEx(&wc) != 0, "RegisterClassEx failed.");
 
+        HWND hwndDesktop = GetDesktopWindow();
+        RECT desktop;
+        GetWindowRect(hwndDesktop, &desktop);
+
         int32 
-            x = 0, 
-            y = 0, 
+            x = desktop.right / 2,
+            y = desktop.bottom / 2,
             w = ConfigInt("Width", 1280), 
             h = ConfigInt("Height", 720);
+        x -= w / 2;
+        y -= h / 2;
         RECT sysRect = { x, y, w, h };
 
         ensure(AdjustWindowRectEx(&sysRect, style, FALSE, styleEx), "AdjustWindowRectEx failed.");
 
-        Hwnd = CreateWindowEx(styleEx, L"game", L"game", style, x, y, w, h, NULL, NULL, Hinstance, NULL);
+        WString title = StringToWString(ConfigStr("Title", "Game"));
+        Hwnd = CreateWindowEx(styleEx, L"game", title.c_str(), style, x, y, w, h, NULL, NULL, Hinstance, NULL);
         ensure(Hwnd != HWND(0), "CreateWindowEx failed.");
         
         Hdc = GetDC(Hwnd);
@@ -233,18 +246,35 @@ public:
             glRenderbufferStorage = glRenderbufferStorageEXT;
             glRenderbufferStorageMultisample = glRenderbufferStorageMultisampleEXT;
         }
+
+        GLuint err;
+        while ((err = glGetError()) != GL_NO_ERROR)
+        {
+            //Process/log the error.
+            __debugbreak();
+        }
+        return true;
     }
 
     void Close() {
+        if (Hwnd != HWND(0)) {
+            CloseWindow(Hwnd);
+            Hwnd = HWND(0);
+        }
+        if (Hglrc != HGLRC(0)) {
+            wglDeleteContext(Hglrc);
+            Hglrc = HGLRC();
+        }
         Owner.OnWindowClosed.Execute();
     }
 
     void SetTitle(String title) {
-
+        WString wtitle = StringToWString(title);
+        SetWindowText(Hwnd, wtitle.c_str());
     }
 
     void SetSize(uint32 width, uint32 height) {
-
+        SetWindowPos(Hwnd, 0, 0, 0, width, height, SWP_NOMOVE | SWP_NOZORDER);
     }
 
     void Update() {
@@ -271,8 +301,8 @@ Window::~Window() {
 }
 
 
-void Window::Create() {
-    Impl->Create();
+bool Window::Create() {
+    return Impl->Create();
 }
 
 void Window::Close() {

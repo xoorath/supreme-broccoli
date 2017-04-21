@@ -12,7 +12,7 @@ namespace XO
         Window(Config& engineConfig);
         ~Window();
 
-        void Create();
+        bool Create();
         void Close();
         void SetTitle(String title);
         void SetSize(uint32 width, uint32 height);
