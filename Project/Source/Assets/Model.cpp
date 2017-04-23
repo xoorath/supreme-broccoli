@@ -79,7 +79,17 @@ private:
             data.Meshes.resize(1);
             auto& submesh = data.Meshes[0];
 
-            submesh.IndexBuffer = new uint32[mesh.indices.size()];
+            // some low number for the demo needs.
+            constexpr uint32 MAX_VERTS = 4096;
+            static uint32 UintBuffer[MAX_VERTS];
+            static float32 FloatBuffer[MAX_VERTS];
+
+
+            xoFatalIf(mesh.indices.size() > MAX_VERTS, "Mesh excedes max size.");
+            xoFatalIf(mesh.indices.size() * (3 + 2 + 3) > MAX_VERTS, "Mesh excedes max size.");
+
+            submesh.IndexBuffer = UintBuffer;
+            submesh.VertexBuffer = FloatBuffer;
 
             // Currently only this configuration is supported.
             submesh.VertexDesc = (VertexDescriptionFlags)
@@ -89,13 +99,13 @@ private:
 
             String texPath = AssetManager::AssetsRoot();
             submesh.Texture.Load(mat.diffuse_texname);
-            Array<float> vb;
-            vb.reserve(mesh.indices.size() * (3 + 2 + 3));
 
             ensure(submesh.Texture.GetIsValid(), "Failed to load texture for mesh.");
 
             // Go over each triangle.
-            uint32 ind = 0;
+            uint32 currentIndex = 0;
+            uint32 currentVert = 0;
+
             for (uint32 f = 0; f < mesh.indices.size() / 3; f++) {
                 tinyobj::index_t idx0 = mesh.indices[3 * f + 0];
                 tinyobj::index_t idx1 = mesh.indices[3 * f + 1];
@@ -152,25 +162,23 @@ private:
                 for (int k = 0; k < 3; k++) {
                     // the reservation of this memory should be complete.
                     // however we should probably resize and simply index+assign.
-                    vb.push_back(v[k][0]);
-                    vb.push_back(v[k][1]);
-                    vb.push_back(v[k][2]);
-                    vb.push_back(n[k][0]);
-                    vb.push_back(n[k][1]);
-                    vb.push_back(n[k][2]);
-                    vb.push_back(tc[k][0]);
-                    vb.push_back(tc[k][1]);
-                    submesh.IndexBuffer[ind] = ind++;
+                    submesh.VertexBuffer[currentVert++] = v[k][0];
+                    submesh.VertexBuffer[currentVert++] = v[k][1];
+                    submesh.VertexBuffer[currentVert++] = v[k][2];
+                    submesh.VertexBuffer[currentVert++] = n[k][0];
+                    submesh.VertexBuffer[currentVert++] = n[k][1];
+                    submesh.VertexBuffer[currentVert++] = n[k][2];
+                    submesh.VertexBuffer[currentVert++] = tc[k][0];
+                    submesh.VertexBuffer[currentVert++] = tc[k][1];
+                    submesh.IndexBuffer[currentIndex] = currentIndex++;
                 }
 
             }
-            submesh.VertexBufferSize = sizeof(float) * vb.size();
-            submesh.IndexBufferSize = sizeof(uint32) * mesh.indices.size();
-            submesh.VertexBuffer = vb.data();
-            submesh.NumTriangles = mesh.indices.size() / 3;
-            Owner->OnLoaded.Execute(data);
+            submesh.VertexBufferSize = sizeof(float) * currentVert;
+            submesh.IndexBufferSize = sizeof(uint32) * currentIndex;
 
-            delete[] submesh.IndexBuffer;
+            submesh.NumTriangles = currentIndex / 3;
+            Owner->OnLoaded.Execute(data);
         }
         else {
             xoErr("Failed to load OBJ Model: " << objPath << "\tinyobjloader:\n" << err);
