@@ -19,7 +19,13 @@ class LogDispatchCallback : public el::LogDispatchCallback
 
     virtual void handle(const el::LogDispatchData* handlePtr) override {
         // we print the file and number first so we can double click in the output window to navigate to the source. The new lines are just for readability.
-        Output("%s(%d)\n%s", handlePtr->logMessage()->file().c_str(), handlePtr->logMessage()->line(), m_Builder.build(handlePtr->logMessage(), true).c_str());
+        //Output("%s(%d)\n%s", 
+        //       handlePtr->logMessage()->file().c_str(), 
+        //       handlePtr->logMessage()->line(), 
+        //       m_Builder.build(handlePtr->logMessage(), true).c_str());
+
+        Output("%s",
+               m_Builder.build(handlePtr->logMessage(), true).c_str());
     }
 };
 

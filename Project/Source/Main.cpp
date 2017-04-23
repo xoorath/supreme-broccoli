@@ -2,8 +2,9 @@
 #include <Include/Log.h>
 #include <Include/Renderer.h>
 #include <Include/Window.h>
+#include <ThirdParty/xo-math/xo-math.h>
 
-#include <iostream>
+#include <sstream>
 
 #if defined(_MSC_VER)
 #define VISUAL_STUDIO_LEAK_DETECTION 1
@@ -22,31 +23,39 @@ int main(int argsc, char** argsv) {
     XO::Renderer        renderer;
 
     //////////////////////////////////////////////////////////////////////////
+    // xo-math goodies
+#if defined(XO_SSE)
+    XO::sse::ThrowNoExceptions();
+    xoLog(XO_MATH_COMPILER_INFO);
+    std::stringstream ss;
+    ss << "\n================================================================ MXCSR\n";
+    XO::sse::GetAllMXCSRInfo(ss);
+    ss << "================================================================";
+    xoLog(ss.str());
+#endif
+
+    //////////////////////////////////////////////////////////////////////////
     bool windowIsOpen = true;
 
-    window.OnWindowCreated.Add([&renderer] ()
-    {
-        renderer.Init(); // we don't use raii for the renderer since it depends on the window creation.
-        renderer.DebugLog();
+    window.OnWindowCreated.Add([&renderer]() {
         xoLog("Window created.");
+        renderer.DebugLog();
+        renderer.Init(); // we don't use raii for the renderer since it depends on the window creation.
     });
 
-    window.OnWindowClosed.Add([&windowIsOpen] ()
-    {
+    window.OnWindowClosed.Add([&windowIsOpen]() {
         windowIsOpen = false;
         xoLog("Window closed.");
     });
 
-    if (window.Create())
-    {
+    if (window.Create()) {
         xoLog("Carousel Application Starting.");
         while (windowIsOpen) {
             renderer.Render();
             window.Update();
         }
     }
-    else
-    {
+    else {
         xoLog("Carousel Application unable to start.");
     }
 

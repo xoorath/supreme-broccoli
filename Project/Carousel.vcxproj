@@ -254,6 +254,7 @@
   <ItemGroup>
     <ClInclude Include="Include\Assets\AssetManager.h" />
     <ClInclude Include="Include\Assets\Config.h" />
+    <ClInclude Include="Include\Assets\Model.h" />
     <ClInclude Include="Include\Assets\Shader.h" />
     <ClInclude Include="Include\Assets\Texture2D.h" />
     <ClInclude Include="Include\Log.h" />
@@ -274,10 +275,14 @@
     <ClInclude Include="ThirdParty\GL\wglext.h" />
     <ClInclude Include="ThirdParty\ini\ini.h" />
     <ClInclude Include="ThirdParty\objload\objload.h" />
+    <ClInclude Include="ThirdParty\tinyobjloader\tiny_obj_loader.h" />
+    <ClInclude Include="ThirdParty\xo-math\xo-math-config.h" />
+    <ClInclude Include="ThirdParty\xo-math\xo-math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\AssetManager.cpp" />
     <ClCompile Include="Source\Assets\Config.cpp" />
+    <ClCompile Include="Source\Assets\Model.cpp" />
     <ClCompile Include="Source\Assets\Shader.cpp" />
     <ClCompile Include="Source\Assets\Texture2D.cpp" />
     <ClCompile Include="Source\Log.cpp" />
@@ -286,8 +291,12 @@
     <ClCompile Include="Source\Subscription.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClCompile Include="ThirdParty\ini\ini.cpp" />
+    <ClCompile Include="ThirdParty\tinyobjloader\tiny_obj_loader.cc" />
+    <ClCompile Include="ThirdParty\xo-math\xo-math.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Assets\Models\Cube\cube.ini" />
+    <None Include="..\Assets\Models\Cube\cube.mtl" />
     <None Include="..\Assets\Shaders\Simple.frag" />
     <None Include="..\Assets\Shaders\Simple.vert" />
     <None Include="..\Builds\Shared\Easylog.config" />
@@ -297,6 +306,17 @@
     <Image Include="..\Assets\Textures\Placeholder.png" />
     <Image Include="..\Assets\Textures\Red2x2.png" />
     <Image Include="..\Assets\Textures\Testing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Assets\Models\Cube\cube.obj">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Text>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

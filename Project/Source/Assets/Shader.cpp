@@ -50,14 +50,30 @@ void ShaderProgram::Uniform::SetAsMatrix4x4(float32* data) {
     }
 }
 
+void ShaderProgram::Uniform::SetAsVector3(float32* data) {
+    if (UniformLocation != -1) {
+        glUniform3f(UniformLocation, data[0], data[1], data[2]);
+    }
+}
+
 void ShaderProgram::Uniform::SetTextureUnit(uint32 unit) {
     if (UniformLocation != -1) {
         glUniform1i(UniformLocation, unit);
     }
 }
 
-ShaderProgram::ShaderProgram(const char* vertShaderPath, const char* fragShaderPath) {
-    ProgramID = -1;
+ShaderProgram::ShaderProgram()
+    : ProgramID(-1) {
+
+}
+
+ShaderProgram::ShaderProgram(const char* vertShaderPath, const char* fragShaderPath)
+    : ProgramID(-1) {
+    Load(vertShaderPath, fragShaderPath);
+}
+
+void ShaderProgram::Load(const char* vertShaderPath, const char* fragShaderPath) {
+    xoErrIf(ProgramID != -1, "Shader program already loaded! Trying to load over top with: " << vertShaderPath << ", " << fragShaderPath);
 
     String vert = GetProgramCode(vertShaderPath);
     String frag = GetProgramCode(fragShaderPath);
@@ -76,7 +92,7 @@ ShaderProgram::ShaderProgram(const char* vertShaderPath, const char* fragShaderP
 
     glGetShaderiv(vid, GL_COMPILE_STATUS, &result);
     glGetShaderiv(vid, GL_INFO_LOG_LENGTH, &infoLength);
-    if (infoLength> 0) {
+    if (infoLength > 0) {
         char* msg = new char[infoLength + 1];
         glGetShaderInfoLog(vid, infoLength, NULL, msg);
         xoLog("Result: " << msg);
@@ -122,8 +138,15 @@ ShaderProgram::ShaderProgram(const char* vertShaderPath, const char* fragShaderP
     glDeleteShader(fid);
 }
 
+void ShaderProgram::Unload() {
+    if (ProgramID != -1) {
+        glDeleteProgram((GLuint)ProgramID);
+        ProgramID = -1;
+    }
+}
+
 ShaderProgram::~ShaderProgram() {
-    glDeleteProgram((GLuint)ProgramID);
+    Unload();
 }
 
 void ShaderProgram::Use() {

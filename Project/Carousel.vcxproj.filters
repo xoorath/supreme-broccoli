@@ -55,6 +55,24 @@
     <Filter Include="Source Files\Source\Assets">
       <UniqueIdentifier>{353d0b17-1068-44f0-9a0f-3f05b98ada4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Models">
+      <UniqueIdentifier>{c753fdea-91c6-44a9-95db-136ec68233ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Models\Cube">
+      <UniqueIdentifier>{74af67ec-6285-4e6e-91b5-04d58007304a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ThirdParty\tinyobjloader">
+      <UniqueIdentifier>{d8edf0f2-8b38-4fec-a8ca-992dfd4f1d0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ThirdParty\tinyobjloader">
+      <UniqueIdentifier>{5ccba6ef-9ebe-4679-9f83-e4249e4a5da1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ThirdParty\xo-math">
+      <UniqueIdentifier>{24184646-7dbd-4069-a3ad-566771bb378d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ThirdParty\xo-math">
+      <UniqueIdentifier>{7e899572-a7e6-449f-a78a-2aba8a020a07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Types.h">
@@ -123,6 +141,18 @@
     <ClInclude Include="Include\Assets\Texture2D.h">
       <Filter>Header Files\Include\Assets</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Assets\Model.h">
+      <Filter>Header Files\Include\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\tinyobjloader\tiny_obj_loader.h">
+      <Filter>Header Files\ThirdParty\tinyobjloader</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\xo-math\xo-math.h">
+      <Filter>Header Files\ThirdParty\xo-math</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\xo-math\xo-math-config.h">
+      <Filter>Header Files\ThirdParty\xo-math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -155,6 +185,15 @@
     <ClCompile Include="Source\Assets\Texture2D.cpp">
       <Filter>Source Files\Source\Assets</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Assets\Model.cpp">
+      <Filter>Source Files\Source\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\tinyobjloader\tiny_obj_loader.cc">
+      <Filter>Source Files\ThirdParty\tinyobjloader</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\xo-math\xo-math.cpp">
+      <Filter>Source Files\ThirdParty\xo-math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Builds\Shared\Engine.ini">
@@ -169,6 +208,12 @@
     <None Include="..\Assets\Shaders\Simple.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="..\Assets\Models\Cube\cube.ini">
+      <Filter>Resource Files\Models\Cube</Filter>
+    </None>
+    <None Include="..\Assets\Models\Cube\cube.mtl">
+      <Filter>Resource Files\Models\Cube</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Assets\Textures\Placeholder.png">
@@ -180,5 +225,10 @@
     <Image Include="..\Assets\Textures\Red2x2.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Assets\Models\Cube\cube.obj">
+      <Filter>Resource Files\Models\Cube</Filter>
+    </Text>
   </ItemGroup>
 </Project>
