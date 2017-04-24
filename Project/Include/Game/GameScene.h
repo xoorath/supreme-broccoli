@@ -8,7 +8,10 @@ class GameScene : public Scene {
     typedef Scene Super;
 public:
     virtual void Init(class Renderer* renderer) override;
-    virtual void Tick() override;
+    virtual float Tick() override;
+
+private:
+    class Entity* CubeEntity;
 };
 
 }

@@ -21,7 +21,7 @@ public:
     // End Component Overrides
 
 private:
-    xoPimpl(Component_ModelImpl, Impl, 32);
+    class Component_ModelImpl* Impl;
 };
 
 }

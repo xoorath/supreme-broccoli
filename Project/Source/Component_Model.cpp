@@ -11,6 +11,7 @@ namespace XO {
 class Component_ModelImpl {
 public:
     String ModelPath;
+    Texture2D texture;
     uint32 renderJob;
 
     Component_ModelImpl(const char* modelPath)
@@ -21,6 +22,7 @@ public:
     void InitRender(Renderer& renderer) {
         Model ModelAsset;
         ModelAsset.OnLoaded.Add([&](ModelData& data) {
+            texture = data.Meshes[0].Texture;
             renderJob = renderer.PrepareJob(data);
         });
         ModelAsset.Load(ModelPath);
@@ -38,10 +40,11 @@ public:
 
 Component_Model::Component_Model(const char* modelPath) 
 : Super() {
-    xoPimplImpl(Component_ModelImpl, Impl)(modelPath);
+    Impl = new Component_ModelImpl(modelPath);
 }
 
 Component_Model::~Component_Model() {
+    delete Impl;
 }
 
 void Component_Model::InitRender(Renderer& renderer) {

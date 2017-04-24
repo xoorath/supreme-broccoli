@@ -63,7 +63,7 @@ public:
     Subscription1<ModelData&> OnLoaded;
 
 private:
-    xoPimpl(ModelImpl, Impl, 4);
+    class ModelImpl* Impl;
 };
 
 }

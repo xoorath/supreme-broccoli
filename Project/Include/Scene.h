@@ -15,7 +15,7 @@ public:
     void RemoveEntity(class Entity* entity);
 
     virtual void Init(class Renderer* renderer);
-    virtual void Tick();
+    virtual float Tick();
 
 private:
     friend class EntityImpl;
@@ -26,7 +26,7 @@ private:
     void OnChildRemoved(class Entity* parent, class Entity* child);
     // End EntityImpl API
 
-    xoPimpl(SceneImpl, Impl, 72);
+    class SceneImpl* Impl;
     
     static Scene* CurrentScene;
 };

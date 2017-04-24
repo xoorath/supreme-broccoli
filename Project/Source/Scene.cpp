@@ -117,10 +117,11 @@ public:
         ElapsedMicroseconds.QuadPart /= Frequency.QuadPart;
     }
 
-    void Tick() {
+    float Tick() {
         float dt = Timer();
         Update(dt);
         Render(dt);
+        return dt;
     }
 
 private:
@@ -158,17 +159,18 @@ void Scene::Init(Renderer* renderer) {
     Impl->Init(renderer);
 }
 
-void Scene::Tick() {
-    Impl->Tick();
+float Scene::Tick() {
+    return Impl->Tick();
 }
 
 Scene::Scene() {
-    xoPimplImpl(SceneImpl, Impl);
+    Impl = new SceneImpl();
     xoErrIf(CurrentScene != nullptr, "The current scene should be unassigned before creating a new one.");
     CurrentScene = this;
 }
 
 Scene::~Scene() {
+    delete Impl;
     if (CurrentScene == this) {
         CurrentScene = nullptr;
     }

@@ -9,6 +9,7 @@ class Window
 {
 public:
     Window();
+    ~Window();
 
     bool Create();
     void Close();
@@ -21,6 +22,6 @@ public:
     class Subscription& OnWindowClosed();
 
 private:
-    xoPimpl(WindowImpl, Impl, 48);
+    class WindowImpl* Impl;
 };
 }

@@ -23,6 +23,7 @@ public:
     GLuint VBO = -1; // vertex buffer object
     GLuint IBO = -1; // index buffer object
     uint32 NumTriangles = 0;
+    Texture2D Texture;
 
     void Init(ModelData& data) {
 
@@ -40,14 +41,16 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, VBO); checkgl();
         glBufferData(GL_ARRAY_BUFFER, mesh.VertexBufferSize, mesh.VertexBuffer, GL_STATIC_DRAW); checkgl();
 
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO); checkgl();
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.IndexBufferSize, mesh.IndexBuffer, GL_STATIC_DRAW); checkgl();
 
+        Texture = mesh.Texture;
     }
     
     void Render(const Matrix4x4& Transform) {
         if (IBO != -1) {
+            glBindTexture(GL_TEXTURE_2D, Texture.GetTextureID());
+
             constexpr uint32 stride = sizeof(float32) * (3 + 3 + 2);
 
             glEnableVertexAttribArray(0); checkgl();
@@ -66,15 +69,7 @@ public:
             // Index buffer
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO); checkgl();
 
-            // Draw the triangles !
-            
-            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); checkgl();
             glDrawElements(GL_TRIANGLES, NumTriangles*3, GL_UNSIGNED_INT, (void*)0); checkgl();
-
-            //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            //glDrawElements(GL_TRIANGLES, NumTriangles * 3, GL_UNSIGNED_INT, (void*)0); checkgl();
-
-            //glDrawElements(GL_LINE, NumTriangles * 3, GL_UNSIGNED_INT, (void*)0); checkgl();
 
             glDisableVertexAttribArray(0); checkgl();
             glDisableVertexAttribArray(1); checkgl();
@@ -123,6 +118,7 @@ _XOSIMDALIGN struct RenderJob {
 
 _XOSIMDALIGN class RendererImpl {
 public:
+    _XO_OVERLOAD_NEW_DELETE();
 
     ShaderProgram SimpleShader;
 
@@ -229,9 +225,8 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         SimpleShader.Use();
-        
+
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, Placeholder.GetTextureID());
         Sampler.SetTextureUnit(0);
 
         ULightPos.SetAsVector3(LightPos);
@@ -239,10 +234,6 @@ public:
         UpdateCamera();
         UViewMatrix.SetAsMatrix4x4(ViewMatrix);
         UProjectionMatrix.SetAsMatrix4x4(ProjectionMatrix);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, Placeholder.GetTextureID());
-        Sampler.SetTextureUnit(0);
 
         RenderScene();
         checkgl();
@@ -309,7 +300,11 @@ private:
 };
 
 Renderer::Renderer() {
-    xoPimplImpl(RendererImpl, Impl)();
+    Impl = new RendererImpl();
+}
+
+Renderer::~Renderer() {
+    delete Impl;
 }
 
 void Renderer::Init() {

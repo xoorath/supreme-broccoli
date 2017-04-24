@@ -8,14 +8,23 @@ namespace XO {
 void GameScene::Init(class Renderer* renderer) {
     Super::Init(renderer);
 
-    Entity* cubeEntity = new Entity();
-    cubeEntity->AddComponent(new Component_Model("Models/Cube/cube.ini"));
+    CubeEntity = new Entity();
+    CubeEntity->AddComponent(new Component_Model("Models/Cube/cube.ini"));
 
-    AddEntity(cubeEntity);
-    cubeEntity->SetScale(Vector3(0.5f, 0.5f, 0.5f));
+    AddEntity(CubeEntity);
+    CubeEntity->SetScale(Vector3(0.5f, 0.5f, 0.5f));
+    CubeEntity->SetPosition(Vector3(0.0f, 0.0f, -3.0f));
 }
 
-void GameScene::Tick() {
-    Super::Tick();
+float GameScene::Tick() {
+    float dt = Super::Tick();
+
+    auto rotation = CubeEntity->GetRotation();
+    
+    rotation += dt;
+
+    CubeEntity->SetRotation(rotation);
+
+    return dt;
 }
 }

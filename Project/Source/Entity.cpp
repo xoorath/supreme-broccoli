@@ -9,6 +9,7 @@ namespace XO {
 
 _XOSIMDALIGN class EntityImpl {
 public:
+    _XO_OVERLOAD_NEW_DELETE();
 
     Matrix4x4 Transform;
     Matrix4x4 ScaleMatrix;
@@ -109,11 +110,11 @@ public:
 };
 
 Entity::Entity() {
-    xoPimplImpl(EntityImpl, Impl)(this);
+    Impl = new EntityImpl(this);
 }
 
 Entity::~Entity() {
-
+    delete Impl;
 }
 
 const Matrix4x4& Entity::GetTransform() {

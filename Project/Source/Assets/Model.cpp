@@ -6,10 +6,10 @@
 #include <Include/Assets/Texture2D.h>
 #include <Include/Log.h>
 
-//#include <ThirdParty/objload/objload.h>
 #include <ThirdParty/tinyobjloader/tiny_obj_loader.h>
+#include <ThirdParty/xo-math/xo-math.h>
 
-#define ensure(cnd, msg) if(!(cnd)) { xoErr(msg); return; }
+#define ensure(cnd, msg) if(!(cnd)) { xoFatal(msg); __debugbreak(); return; }
 
 namespace XO {
 
@@ -124,7 +124,7 @@ private:
                     tc[2][1] = 1.0f - attrib.texcoords[2 * idx2.texcoord_index + 1];
                 }
                 else {
-                    memset(tc, 0, sizeof(3 * 2 * sizeof(float32)));
+                    memset(tc, 0, (3 * 2 * sizeof(float32)));
                 }
 
                 float32 v[3][3];
@@ -156,7 +156,20 @@ private:
                     }
                 }
                 else {
-                    memset(n, 0, sizeof(3 * 3 * sizeof(float32)));
+                    Vector3 a(v[0][0], v[1][0], v[2][0]);
+                    Vector3 b(v[0][1], v[1][1], v[2][1]);
+                    Vector3 c(v[0][2], v[1][2], v[2][2]);
+                    Vector3 ab = a - b;
+                    Vector3 bc = b - c;
+                    Vector3 norm;
+                    ab.Normalize();
+                    bc.Normalize();
+                    Vector3::Cross(ab, bc, norm);
+                    for (uint32 k = 0; k < 3; k++) {
+                        n[0][k] = norm[0];
+                        n[1][k] = norm[1];
+                        n[2][k] = norm[2];
+                    }
                 }
 
                 for (int k = 0; k < 3; k++) {
@@ -181,7 +194,7 @@ private:
             Owner->OnLoaded.Execute(data);
         }
         else {
-            xoErr("Failed to load OBJ Model: " << objPath << "\tinyobjloader:\n" << err);
+            xoErr("Failed to load OBJ Model: " << objPath << "\ntinyobjloader:\n" << err);
         }
         //obj::Model model = obj::loadModelFromFile(objPath);
 
@@ -199,10 +212,15 @@ Model::~Model() {
 
 void Model::Load(String path) {
     xoErrIf(Impl != nullptr, "A model is being loaded twice. This will leak.");
-    xoPimplImpl(ModelImpl, Impl)(this, path);
+    Impl = new ModelImpl(this, path);
 }
 
 void Model::Unload() {
+    if (Impl)
+    {
+        delete Impl;
+        Impl = nullptr;
+    }
 }
 
 bool Model::GetIsValid() const {

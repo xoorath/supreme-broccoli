@@ -32,7 +32,9 @@ private:
     void Initialize();
     // End SceneImpl API
 
-    xoPimpl(EntityImpl, Impl, 352);
+    // TODO:
+    // Don't use the pimpl pattern for entities. Use an interface.
+    class EntityImpl* Impl;
 };
 
 }

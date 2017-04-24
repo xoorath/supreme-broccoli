@@ -298,7 +298,12 @@ WindowImpl* WindowImpl::Self = nullptr;
 
 Window::Window()
 {
-    xoPimplImpl(WindowImpl, Impl)();
+    Impl = new WindowImpl();
+}
+
+Window::~Window()
+{
+    delete Impl;
 }
 
 bool Window::Create() {

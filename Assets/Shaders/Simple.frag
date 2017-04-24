@@ -55,7 +55,6 @@ void main(){
 		(MaterialAmbientColor +
 		MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
 		MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance)).xyz
-		, 0.5);
-
+		, 1);
 
 }

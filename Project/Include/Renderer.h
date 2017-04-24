@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Include/Macros.h>
 #include <Include/Types.h>
 
 namespace XO {
@@ -8,6 +7,7 @@ namespace XO {
 class Renderer {
 public:
     Renderer();
+    ~Renderer();
 
     void Init();
     void Render();
@@ -17,7 +17,7 @@ public:
     void SubmitJob(uint32 job, const class Matrix4x4& transform);
 
 private:
-    xoPimpl(RendererImpl, Impl, 352);
+    class RendererImpl* Impl;
 };
 
 }
