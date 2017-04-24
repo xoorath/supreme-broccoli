@@ -8,7 +8,7 @@ namespace XO {
 class Scene {
 public:
     Scene();
-    ~Scene();
+    virtual ~Scene();
     static Scene* GetCurrentScene();
 
     void AddEntity(class Entity* entity);

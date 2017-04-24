@@ -30,6 +30,7 @@ public:
     virtual void Render(class Renderer& renderer, float dt) { };
 
     const class Matrix4x4& GetTransform() const;
+    void GetWorldTransform(class Matrix4x4& outMatrix) const;
 
 private:
     friend class EntityImpl; // assigns our owner.

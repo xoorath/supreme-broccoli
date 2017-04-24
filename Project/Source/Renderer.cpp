@@ -128,19 +128,13 @@ public:
     ShaderProgram::Uniform UViewMatrix;
     ShaderProgram::Uniform UProjectionMatrix;
     ShaderProgram::Uniform ULightPos;
+    ShaderProgram::Uniform USampler;
 
     Matrix4x4 ViewMatrix;
     Matrix4x4 ProjectionMatrix;
     Vector3 LightPos;
 
-    ShaderProgram::Uniform Sampler;
-
-    Model Cube;
-    Texture2D Placeholder;
-
     Array<Renderable> Renderables;
-    float curr_quat[4];
-    float prev_quat[4];
 
     RendererImpl() {
         CurrentJobs.reserve(1024);
@@ -162,16 +156,6 @@ public:
 
         checkgl();
 
-        Placeholder.Load("Textures/Testing.png");
-
-        Cube.OnLoaded.Add([this](ModelData& data) {
-            Renderables.push_back(Renderable());
-            Renderable& model = Renderables[Renderables.size() - 1];
-
-            model.Init(data);
-        });
-
-        Cube.Load("Models/Cube/cube.ini");
 
         UModelViewProjectionMatrix = SimpleShader["MVP"];
         UModelViewMatrix = SimpleShader["MV"];
@@ -182,7 +166,7 @@ public:
 
         LightPos.Set(4, 4, 4);
 
-        Sampler = SimpleShader["myTextureSampler"];
+        USampler = SimpleShader["myTextureSampler"];
 
         ProjectionMatrix = Matrix4x4::PerspectiveProjectionDegrees(60, 1280.0f / 720.0f, 0.1f, 100);
 
@@ -201,6 +185,9 @@ public:
             UModelViewProjectionMatrix.SetAsMatrix4x4(MVP);
             UModelViewMatrix.SetAsMatrix4x4(MV);
 
+            job.RenderableAsset->Render(job.Transform);
+
+            job.Transform[3][2] += 1.0f;
             job.RenderableAsset->Render(job.Transform);
         }
 
@@ -227,7 +214,7 @@ public:
         SimpleShader.Use();
 
         glActiveTexture(GL_TEXTURE0);
-        Sampler.SetTextureUnit(0);
+        USampler.SetTextureUnit(0);
 
         ULightPos.SetAsVector3(LightPos);
 

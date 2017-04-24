@@ -56,7 +56,9 @@ void Component_Model::Update(float dt) {
 }
 
 void Component_Model::Render(Renderer& renderer, float dt) {
-    Impl->Render(renderer, dt, GetTransform());
+    Matrix4x4 transform;
+    GetWorldTransform(transform);
+    Impl->Render(renderer, dt, transform);
 }
 
 }

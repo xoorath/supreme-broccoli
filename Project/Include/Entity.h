@@ -12,6 +12,7 @@ public:
     ~Entity();
 
     const class Matrix4x4& GetTransform();
+    void GetWorldTransform(class Matrix4x4& outMatrix);
 
     void AddComponent(class Component* component);
     void RemoveComponent(class Component* component);
@@ -27,6 +28,7 @@ public:
     void SetRotation(const class Vector3& rotation);
 
 private:
+    friend class EntityImpl;
     friend class SceneImpl;
     // SceneImpl API
     void Initialize();

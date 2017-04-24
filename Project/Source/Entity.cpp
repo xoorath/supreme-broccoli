@@ -55,6 +55,18 @@ public:
         }
     }
 
+
+    void GetWorldTransform(Matrix4x4& outMatrix) {
+        if (Parent) {
+            Matrix4x4 parentTransform;
+            Parent->GetWorldTransform(parentTransform);
+            outMatrix = GetTransform() * parentTransform;
+        }
+        else {
+            outMatrix = GetTransform();
+        }
+    }
+
     const Matrix4x4& GetTransform() {
         if (PositionDirty || RotationDirty || ScaleDirty) {
             if (PositionDirty) {
@@ -97,6 +109,11 @@ public:
         }
     }
 
+    void AddChild(Entity* child) {
+        child->Impl->Parent = Owner;
+        child->Initialize();
+    }
+
     void Initialize() {
         xoFatalIf(IsInitialized, "Double initialization of an entity is not allowed.");
         Scene* scene = Scene::GetCurrentScene();
@@ -121,6 +138,10 @@ const Matrix4x4& Entity::GetTransform() {
     return Impl->GetTransform();
 }
 
+void Entity::GetWorldTransform(Matrix4x4& outMatrix) {
+    Impl->GetWorldTransform(outMatrix);
+}
+
 void Entity::AddComponent(Component* component) {
     Impl->AddComponent(component);
 }
@@ -130,7 +151,7 @@ void Entity::RemoveComponent(Component* component) {
 }
 
 void Entity::AddChild(Entity* child) {
-
+    Impl->AddChild(child);
 }
 
 const Vector3& Entity::GetPosition() const {

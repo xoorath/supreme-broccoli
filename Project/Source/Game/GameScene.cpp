@@ -5,6 +5,15 @@
 #include <ThirdParty/xo-math/xo-math.h>
 
 namespace XO {
+GameScene::~GameScene() {
+    if (CubeEntity) {
+        delete CubeEntity;
+    }
+    if (OrbitingCube) {
+        delete OrbitingCube;
+    }
+}
+
 void GameScene::Init(class Renderer* renderer) {
     Super::Init(renderer);
 
@@ -12,8 +21,13 @@ void GameScene::Init(class Renderer* renderer) {
     CubeEntity->AddComponent(new Component_Model("Models/Cube/cube.ini"));
 
     AddEntity(CubeEntity);
-    CubeEntity->SetScale(Vector3(0.5f, 0.5f, 0.5f));
     CubeEntity->SetPosition(Vector3(0.0f, 0.0f, -3.0f));
+
+    OrbitingCube = new Entity();
+    OrbitingCube->AddComponent(new Component_Model("Models/Cube/cube.ini"));
+
+    CubeEntity->AddChild(OrbitingCube);
+    OrbitingCube->SetPosition(Vector3(0.0f, 0.0f, -2.0f));
 }
 
 float GameScene::Tick() {
@@ -24,6 +38,11 @@ float GameScene::Tick() {
     rotation += dt;
 
     CubeEntity->SetRotation(rotation);
+
+    auto orbitingRotation = OrbitingCube->GetRotation();
+    orbitingRotation.y += dt;
+    OrbitingCube->SetRotation(orbitingRotation);
+    
 
     return dt;
 }
