@@ -1,8 +1,11 @@
 #include <Include/Assets/AssetManager.h>
 #include <Include/Log.h>
 #include <Include/Renderer.h>
+#include <Include/Subscription.h>
 #include <Include/Window.h>
 #include <ThirdParty/xo-math/xo-math.h>
+
+#include <Include/Game/GameScene.h>
 
 #include <sstream>
 
@@ -16,11 +19,15 @@ int main(int argsc, char** argsv) {
 #endif
 
     //////////////////////////////////////////////////////////////////////////
-    // Core system initializations.
+    // Core systems
     XO::AssetManager    assetManager;
     XO::LogManager      logManager(XO::AssetManager::EngineConfig("Paths", "EasyLoggingCppConfig", "./EasyLog.config"));
     XO::Window          window;
     XO::Renderer        renderer;
+
+    //////////////////////////////////////////////////////////////////////////
+    // Gameplay
+    XO::GameScene game;
 
     //////////////////////////////////////////////////////////////////////////
     // xo-math goodies
@@ -37,13 +44,14 @@ int main(int argsc, char** argsv) {
     //////////////////////////////////////////////////////////////////////////
     bool windowIsOpen = true;
 
-    window.OnWindowCreated.Add([&renderer]() {
+    window.OnWindowCreated().Add([&renderer, &game]() {
         xoLog("Window created.");
         renderer.DebugLog();
         renderer.Init(); // we don't use raii for the renderer since it depends on the window creation.
+        game.Init(&renderer);
     });
 
-    window.OnWindowClosed.Add([&windowIsOpen]() {
+    window.OnWindowClosed().Add([&windowIsOpen]() {
         windowIsOpen = false;
         xoLog("Window closed.");
     });
@@ -53,6 +61,7 @@ int main(int argsc, char** argsv) {
         while (windowIsOpen) {
             renderer.Render();
             window.Update();
+            game.Tick();
         }
     }
     else {

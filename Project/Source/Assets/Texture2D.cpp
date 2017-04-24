@@ -19,7 +19,10 @@ Texture2D::Texture2D()
 }
 
 Texture2D::~Texture2D() {
-    Unload();
+    // TODO: use a texture manager of some sort to unload textures once they're fully unreferenced.
+    // For now we're just depending on the caller to call Unload();
+
+    //Unload();
 }
 
 void Texture2D::Load(String path) {

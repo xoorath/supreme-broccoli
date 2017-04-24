@@ -6,6 +6,8 @@
 #include <Include/Log.h>
 #include <ThirdParty/xo-math/xo-math.h>
 
+#include <Include/Component_Model.h>
+
 #if defined(GAME_WINDOWS)
 #include <ThirdParty/GL/glew.h>
 #include <ThirdParty/GL/wglew.h>
@@ -22,9 +24,8 @@ public:
     GLuint IBO = -1; // index buffer object
     uint32 NumTriangles = 0;
 
-    Matrix4x4 Transform;
-
     void Init(ModelData& data) {
+
         xoFatalIf(data.Meshes.size() != 1, "Only one mesh per model is supported currently.");
 
         auto& mesh = data.Meshes[0];
@@ -44,8 +45,8 @@ public:
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.IndexBufferSize, mesh.IndexBuffer, GL_STATIC_DRAW); checkgl();
 
     }
-
-    void Render() {
+    
+    void Render(const Matrix4x4& Transform) {
         if (IBO != -1) {
             constexpr uint32 stride = sizeof(float32) * (3 + 3 + 2);
 
@@ -79,12 +80,6 @@ public:
             glDisableVertexAttribArray(1); checkgl();
             glDisableVertexAttribArray(2); checkgl();
         }
-
-        static float tempdt = 0.0f;
-        tempdt += 0.01f;
-        Transform = 
-            Matrix4x4::RotationDegrees(tempdt) * 
-            Matrix4x4::Translation(0, 0, -3);
     }
 
     bool ReportAnyGLErrors() const {
@@ -121,9 +116,13 @@ public:
     }
 };
 
+_XOSIMDALIGN struct RenderJob {
+    Renderable* RenderableAsset;
+    Matrix4x4 Transform;
+};
+
 _XOSIMDALIGN class RendererImpl {
 public:
-    _XO_OVERLOAD_NEW_DELETE();
 
     ShaderProgram SimpleShader;
 
@@ -148,7 +147,7 @@ public:
     float prev_quat[4];
 
     RendererImpl() {
-
+        CurrentJobs.reserve(1024);
      }
 
     void Init() {
@@ -157,6 +156,9 @@ public:
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
         glEnable(GL_CULL_FACE);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         GLuint VertexArrayID;
         glGenVertexArrays(1, &VertexArrayID);
@@ -195,16 +197,18 @@ public:
     void RenderScene() {
         Matrix4x4 MVP, MV;
 
-        for (auto & renderable : Renderables) {
-            MV = ViewMatrix * renderable.Transform;
+        for (auto & job : CurrentJobs) {
+            MV = ViewMatrix * job.Transform;
             MVP = ProjectionMatrix * MV;
 
-            UModelMatrix.SetAsMatrix4x4(renderable.Transform);
+            UModelMatrix.SetAsMatrix4x4(job.Transform);
             UModelViewProjectionMatrix.SetAsMatrix4x4(MVP);
             UModelViewMatrix.SetAsMatrix4x4(MV);
 
-            renderable.Render();
+            job.RenderableAsset->Render(job.Transform);
         }
+
+        CurrentJobs.clear();
     }
 
     void UpdateCamera() {
@@ -255,6 +259,25 @@ public:
         << "\n================================================================");
     }
 
+    uint32 CurrentJobId = 0;
+    Map<uint32, Renderable*> RenderableJobs;
+    Array<RenderJob> CurrentJobs;
+
+    uint32 PrepareJob(ModelData& modelData) {
+        Renderable* r = new Renderable();
+        r->Init(modelData);
+        CurrentJobId++;
+        RenderableJobs[CurrentJobId] = r;
+        return CurrentJobId;
+    }
+
+    void SubmitJob(uint32 renderable, const Matrix4x4& transform) {
+        CurrentJobs.push_back(RenderJob());
+        RenderJob& thisJob = CurrentJobs[CurrentJobs.size() - 1];
+        thisJob.Transform = transform;
+        thisJob.RenderableAsset = RenderableJobs[renderable];
+    }
+
 private:
     bool ReportAnyGLErrors() const {
         auto err = glGetError();
@@ -285,12 +308,8 @@ private:
     }
 };
 
-Renderer::Renderer() : Impl(nullptr) {
-    Impl = new RendererImpl();
-}
-
-Renderer::~Renderer() {
-    delete Impl;
+Renderer::Renderer() {
+    xoPimplImpl(RendererImpl, Impl)();
 }
 
 void Renderer::Init() {
@@ -298,16 +317,19 @@ void Renderer::Init() {
 }
 
 void Renderer::Render() {
-    if (Impl) {
-        Impl->Render();
-    }
+    Impl->Render();
 }
 
 void Renderer::DebugLog() {
-    if (Impl) {
-        Impl->DebugLog();
-    }
+    Impl->DebugLog();
 }
 
+uint32 Renderer::PrepareJob(struct ModelData& modelData) {
+    return Impl->PrepareJob(modelData);
+}
+
+void Renderer::SubmitJob(uint32 job, const class Matrix4x4& transform) {
+    Impl->SubmitJob(job, transform);
+}
 
 }

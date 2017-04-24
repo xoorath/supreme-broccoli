@@ -1,27 +1,26 @@
 #pragma once
 
+#include <Include/Macros.h>
 #include <Include/Types.h>
-#include <Include/Subscription.h>
 
 namespace XO
 {
-    class Window
-    {
-    public:
-        Window();
-        ~Window();
+class Window
+{
+public:
+    Window();
 
-        bool Create();
-        void Close();
-        void SetTitle(String title);
-        void SetSize(uint32 width, uint32 height);
+    bool Create();
+    void Close();
+    void SetTitle(String title);
+    void SetSize(uint32 width, uint32 height);
 
-        void Update();
+    void Update();
 
-        Subscription OnWindowCreated;
-        Subscription OnWindowClosed;
+    class Subscription& OnWindowCreated();
+    class Subscription& OnWindowClosed();
 
-    private:
-        class WindowImpl* Impl;
-    };
+private:
+    xoPimpl(WindowImpl, Impl, 48);
+};
 }

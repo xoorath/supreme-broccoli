@@ -2,6 +2,7 @@
 
 #include <Include/Assets/AssetManager.h>
 #include <Include/Log.h>
+#include <Include/Subscription.h>
 #include <Include/TextHelpers.h>
 
 #if defined(GAME_WINDOWS)
@@ -19,12 +20,13 @@ namespace XO {
 class WindowImpl {
 public:
     static WindowImpl* Self;
-    Window& Owner;
 
-    WindowImpl(Window& owner) 
-        : Owner(owner) {
+    WindowImpl() {
         Self = this;
     }
+
+    Subscription OnWindowCreated;
+    Subscription OnWindowClosed;
 
 #if defined(GAME_WINDOWS)
     HWND Hwnd;
@@ -256,7 +258,7 @@ public:
             glRenderbufferStorageMultisample = glRenderbufferStorageMultisampleEXT;
         }
 
-        Owner.OnWindowCreated.Execute();
+        OnWindowCreated.Execute();
         return true;
     }
 
@@ -269,7 +271,7 @@ public:
             wglDeleteContext(Hglrc);
             Hglrc = HGLRC();
         }
-        Owner.OnWindowClosed.Execute();
+        OnWindowClosed.Execute();
     }
 
     void SetTitle(String title) {
@@ -296,13 +298,8 @@ WindowImpl* WindowImpl::Self = nullptr;
 
 Window::Window()
 {
-    Impl = new WindowImpl(*this);
+    xoPimplImpl(WindowImpl, Impl)();
 }
-
-Window::~Window() {
-    delete Impl;
-}
-
 
 bool Window::Create() {
     return Impl->Create();
@@ -321,6 +318,14 @@ void Window::SetSize(uint32 width, uint32 height) {
 
 void Window::Update() {
     Impl->Update();
+}
+
+Subscription& Window::OnWindowCreated() {
+    return Impl->OnWindowCreated;
+}
+
+Subscription& Window::OnWindowClosed() {
+    return Impl->OnWindowClosed;
 }
 
 }

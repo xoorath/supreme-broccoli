@@ -73,6 +73,12 @@
     <Filter Include="Header Files\ThirdParty\xo-math">
       <UniqueIdentifier>{7e899572-a7e6-449f-a78a-2aba8a020a07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Source\Game">
+      <UniqueIdentifier>{68fd3e2c-b234-4a87-9a4a-886cd20bdabc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Include\Game">
+      <UniqueIdentifier>{1f4bbee1-88c9-41e5-9219-6c54eae5767d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Types.h">
@@ -153,6 +159,24 @@
     <ClInclude Include="ThirdParty\xo-math\xo-math-config.h">
       <Filter>Header Files\ThirdParty\xo-math</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Entity.h">
+      <Filter>Header Files\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Scene.h">
+      <Filter>Header Files\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Game\GameScene.h">
+      <Filter>Header Files\Include\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Hash.h">
+      <Filter>Header Files\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Component_Model.h">
+      <Filter>Header Files\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Component.h">
+      <Filter>Header Files\Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -193,6 +217,21 @@
     </ClCompile>
     <ClCompile Include="ThirdParty\xo-math\xo-math.cpp">
       <Filter>Source Files\ThirdParty\xo-math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\GameScene.cpp">
+      <Filter>Source Files\Source\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Component_Model.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Component.cpp">
+      <Filter>Source Files\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

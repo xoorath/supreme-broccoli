@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Include/Assets/Texture2D.h>
+#include <Include/Macros.h>
 #include <Include/Types.h>
 #include <Include/Subscription.h>
 
@@ -62,7 +63,7 @@ public:
     Subscription1<ModelData&> OnLoaded;
 
 private:
-    class ModelImpl* Impl;
+    xoPimpl(ModelImpl, Impl, 4);
 };
 
 }

@@ -190,8 +190,7 @@ private:
 
 
 Model::Model() 
-    : Impl(nullptr) {
-
+: Impl(nullptr) {
 }
 
 Model::~Model() {
@@ -200,12 +199,10 @@ Model::~Model() {
 
 void Model::Load(String path) {
     xoErrIf(Impl != nullptr, "A model is being loaded twice. This will leak.");
-    Impl = new ModelImpl(this, path);
+    xoPimplImpl(ModelImpl, Impl)(this, path);
 }
 
 void Model::Unload() {
-    delete Impl;
-    Impl = nullptr;
 }
 
 bool Model::GetIsValid() const {
