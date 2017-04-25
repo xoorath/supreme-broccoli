@@ -3,12 +3,13 @@
 #include <Include/Widgets/Widget.h>
 
 namespace XO {
+class Entity;
 namespace UI {
 
 class Widget_Carousel : public Widget {
     typedef Widget Super;
 public:
-    virtual void Init(class Entity* owner) override;
+    virtual void Init(Entity* owner) override;
     virtual void Update(float dt) override;
 
 protected:

@@ -3,6 +3,7 @@
 #include <Include/Types.h>
 
 namespace XO {
+class Entity;
 namespace UI {
 
 enum DataRequirement {
@@ -13,7 +14,7 @@ enum DataRequirement {
 class Widget {
 protected:
     friend class Component_Widget;
-    virtual void Init(class Entity* owner) { };
+    virtual void Init(Entity* owner) { };
     virtual void Update(float dt) { };
 
     bool GetInt(const char* name, int32& outInt, DataRequirement requirement = Optional, int32 defaultValue = 0) const;

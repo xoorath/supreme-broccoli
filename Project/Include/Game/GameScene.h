@@ -12,16 +12,13 @@ class IDataProvider;
 class GameScene : public Scene {
     typedef Scene Super;
 public:
+    GameScene();
     virtual ~GameScene();
     virtual void Init(class Renderer* renderer) override;
     virtual float Tick() override;
 
 private:
-    class Entity* UIRoot;
-    
-    UI::Component_Widget* CarouselComponent;
-    UI::IDataProvider* CarouselData;
-    UI::IDataProvider* CarouselConfig;
+    class GameSceneImpl* Impl;
     //class Entity* CubeEntity;
     //
     //class Entity* OrbitingCube;

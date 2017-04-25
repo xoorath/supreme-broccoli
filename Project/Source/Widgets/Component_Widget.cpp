@@ -31,7 +31,8 @@ void Component_Widget::Update(float dt) {
 ////////////////////////////////////////////////////////////////////////// End Component Overrides
 
 Component_Widget::Component_Widget(Widget* ownedWidget) 
-    : OwnedWidget(ownedWidget) {
+    : Super()
+    , OwnedWidget(ownedWidget) {
 }
 
 }

@@ -9,19 +9,53 @@
 #include <Include/Widgets/DataProvider_Config.h>
 
 namespace XO {
+
+class GameSceneImpl {
+public:
+    GameSceneImpl(GameScene* owner)
+        : Owner(owner)
+        , CarouselConfig("Widgets/Carousel/DemoCarousel.ini")
+        , CarouselComponent(nullptr) {
+    }
+
+    ~GameSceneImpl() {
+        if (CarouselComponent) {
+            delete CarouselComponent;
+        }
+    }
+
+    void Init(class Renderer* renderer) {
+        CarouselData.LinkFallback(&CarouselConfig);
+
+        CarouselData["Beta"] = 6;
+        CarouselComponent = UI::Component_Widget::CreateWidget_Carousel(&CarouselData);
+
+        UIRoot.AddComponent(CarouselComponent);
+        Owner->AddEntity(&UIRoot);
+    }
+
+    void Tick(float dt) {
+
+    }
+
+private:
+    GameScene* Owner;
+
+    Entity UIRoot;
+
+    UI::Component_Widget* CarouselComponent;
+
+    UI::DataProvider_Code CarouselData;
+    UI::DataProvider_Config CarouselConfig;
+};
+
+GameScene::GameScene() {
+    Impl = new GameSceneImpl(this);
+}
+
 GameScene::~GameScene() {
-    if (UIRoot) {
-        delete UIRoot;
-    }
-    if (CarouselData) {
-        delete CarouselData;
-    }
-    if (CarouselConfig) {
-        delete CarouselConfig;
-    }
-    if (CarouselComponent) {
-        delete CarouselComponent;
-    }
+    delete Impl;
+
     //if (CubeEntity) {
     //    delete CubeEntity;
     //}
@@ -33,20 +67,7 @@ GameScene::~GameScene() {
 void GameScene::Init(class Renderer* renderer) {
     Super::Init(renderer);
 
-    UIRoot = new Entity();
-    
-    auto data = new UI::DataProvider_Code();
-    auto conf = new UI::DataProvider_Config("Widgets/Carousel/DemoCarousel.ini");
-
-    CarouselData = data;
-    CarouselConfig = conf;
-    CarouselData->LinkFallback(CarouselConfig);
-
-    (*data)["Beta"] = 6;
-    CarouselComponent = UI::Component_Widget::CreateWidget_Carousel(CarouselData);
-
-    UIRoot->AddComponent(CarouselComponent);
-    AddEntity(UIRoot);
+    Impl->Init(renderer);
 
     //CubeEntity = new Entity();
     //CubeEntity->AddComponent(new Component_Model("Models/Cube/cube.ini"));
@@ -63,7 +84,7 @@ void GameScene::Init(class Renderer* renderer) {
 
 float GameScene::Tick() {
     float dt = Super::Tick();
-
+    Impl->Tick(dt);
     //auto rotation = CubeEntity->GetRotation();
     //
     //rotation += dt;
