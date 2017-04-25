@@ -266,6 +266,12 @@
     <ClInclude Include="Include\Renderer.h" />
     <ClInclude Include="Include\Scene.h" />
     <ClInclude Include="Include\TextHelpers.h" />
+    <ClInclude Include="Include\Widgets\Carousel\Widget_Carousel.h" />
+    <ClInclude Include="Include\Widgets\Component_Widget.h" />
+    <ClInclude Include="Include\Widgets\DataProvider.h" />
+    <ClInclude Include="Include\Widgets\DataProvider_Code.h" />
+    <ClInclude Include="Include\Widgets\DataProvider_Config.h" />
+    <ClInclude Include="Include\Widgets\Widget.h" />
     <ClInclude Include="Include\Window.h" />
     <ClInclude Include="Include\Macros.h" />
     <ClInclude Include="Include\Subscription.h" />
@@ -300,6 +306,12 @@
     <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\Scene.cpp" />
     <ClCompile Include="Source\Subscription.cpp" />
+    <ClCompile Include="Source\Widgets\Carousel\Widget_Carousel.cpp" />
+    <ClCompile Include="Source\Widgets\Component_Widget.cpp" />
+    <ClCompile Include="Source\Widgets\DataProvider.cpp" />
+    <ClCompile Include="Source\Widgets\DataProvider_Code.cpp" />
+    <ClCompile Include="Source\Widgets\DataProvider_Config.cpp" />
+    <ClCompile Include="Source\Widgets\Widget.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClCompile Include="ThirdParty\ini\ini.cpp" />
     <ClCompile Include="ThirdParty\tinyobjloader\tiny_obj_loader.cc" />

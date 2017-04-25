@@ -79,6 +79,24 @@
     <Filter Include="Header Files\Include\Game">
       <UniqueIdentifier>{1f4bbee1-88c9-41e5-9219-6c54eae5767d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Include\Widgets">
+      <UniqueIdentifier>{4564ff96-d9de-44e2-8757-8b6ae6deafc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Include\Widgets\Carousel">
+      <UniqueIdentifier>{c8009257-b40f-4325-99a5-840d3cd113b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Widgets">
+      <UniqueIdentifier>{d6b93885-e388-4393-93be-6d06a2d22117}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Widgets\Carousel">
+      <UniqueIdentifier>{31e5fbb2-2bc2-4eee-bc85-4f91d251ac8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Widgets">
+      <UniqueIdentifier>{5dbf3612-f508-4b1e-8dcf-38d358f71618}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Widgets\Carousel">
+      <UniqueIdentifier>{9146a286-8862-4882-9862-0879d6ebd4c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Types.h">
@@ -177,6 +195,24 @@
     <ClInclude Include="Include\Component.h">
       <Filter>Header Files\Include</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Widgets\Component_Widget.h">
+      <Filter>Header Files\Include\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Widgets\DataProvider.h">
+      <Filter>Header Files\Include\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Widgets\DataProvider_Config.h">
+      <Filter>Header Files\Include\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Widgets\Widget.h">
+      <Filter>Header Files\Include\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Widgets\Carousel\Widget_Carousel.h">
+      <Filter>Header Files\Include\Widgets\Carousel</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Widgets\DataProvider_Code.h">
+      <Filter>Header Files\Include\Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -232,6 +268,24 @@
     </ClCompile>
     <ClCompile Include="Source\Component.cpp">
       <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Widgets\DataProvider.cpp">
+      <Filter>Source Files\Source\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Widgets\DataProvider_Code.cpp">
+      <Filter>Source Files\Source\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Widgets\DataProvider_Config.cpp">
+      <Filter>Source Files\Source\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Widgets\Widget.cpp">
+      <Filter>Source Files\Source\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Widgets\Component_Widget.cpp">
+      <Filter>Source Files\Source\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Widgets\Carousel\Widget_Carousel.cpp">
+      <Filter>Source Files\Source\Widgets\Carousel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
