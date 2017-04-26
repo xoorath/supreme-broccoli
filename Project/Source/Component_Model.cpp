@@ -34,7 +34,9 @@ public:
 
     void Render(Renderer& renderer, float dt, const Matrix4x4& transform) {
         RenderJob.Transform = transform;
-        renderer.SubmitJob(RenderJob);
+        if (RenderJob.RGBA[3] > 0.0f) {
+            renderer.SubmitJob(RenderJob);
+        }
     }
 
     void GetRGBA(float32 outRGBA[]) const {
