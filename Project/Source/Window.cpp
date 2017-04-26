@@ -2,6 +2,7 @@
 
 #include <Include/Assets/AssetManager.h>
 #include <Include/Log.h>
+#include <Include/Input.h>
 #include <Include/Subscription.h>
 #include <Include/TextHelpers.h>
 
@@ -14,19 +15,28 @@
 #include <shellapi.h>
 #endif
 
+#include <ThirdParty/xo-math/xo-math.h>
+
 #define ensure(cnd, msg) {if(!(cnd)) { xoFatal(msg); __debugbreak(); Close(); return false; }}
 
 namespace XO {
-class WindowImpl {
+_XOSIMDALIGN class WindowImpl {
 public:
+    _XO_OVERLOAD_NEW_DELETE();
+
     static WindowImpl* Self;
 
-    WindowImpl() {
+    WindowImpl()
+    : MousePosition(0.0f, 0.0f) {
         Self = this;
     }
 
     Subscription OnWindowCreated;
     Subscription OnWindowClosed;
+    Input InputController;
+
+    Vector2 MousePosition;
+    int32 MouseButtonDown;
 
 #if defined(GAME_WINDOWS)
     HWND Hwnd;
@@ -40,6 +50,80 @@ public:
             case WM_QUIT:
                 Close();
                 break;
+            case WM_MOUSEMOVE:
+            {
+                WORD x, y;
+                x = LOWORD(lParam);
+                y = HIWORD(lParam);
+                InputController.NotifyMouseMove((float)x, (float)y);
+            }
+                break;
+            case WM_LBUTTONDOWN:
+                InputController.NotifyMouseDown(MouseButton::Left);
+                break;
+            case WM_LBUTTONUP:
+                InputController.NotifyMouseUp(MouseButton::Left);
+                break;
+
+            case WM_MBUTTONDOWN:
+                InputController.NotifyMouseDown(MouseButton::Middle);
+                break;
+            case WM_MBUTTONUP:
+                InputController.NotifyMouseUp(MouseButton::Middle);
+                break;
+
+            case WM_RBUTTONDOWN:
+                InputController.NotifyMouseDown(MouseButton::Right);
+                break;
+            case WM_RBUTTONUP:
+                InputController.NotifyMouseUp(MouseButton::Right);
+                break;
+
+            case WM_KEYDOWN:
+                switch (wParam) {
+                    case VK_ESCAPE:
+                        InputController.NotifyKeyDown(KeyboardKey::Escape);
+                        break;
+                    case VK_RETURN:
+                        InputController.NotifyKeyDown(KeyboardKey::Enter);
+                        break;
+                    case VK_RIGHT:
+                        InputController.NotifyKeyDown(KeyboardKey::Right);
+                        break;
+                    case VK_LEFT:
+                        InputController.NotifyKeyDown(KeyboardKey::Left);
+                        break;
+                    case VK_UP:
+                        InputController.NotifyKeyDown(KeyboardKey::Up);
+                        break;
+                    case VK_DOWN:
+                        InputController.NotifyKeyDown(KeyboardKey::Down);
+                        break;
+                }
+                break;
+
+            case WM_KEYUP:
+                switch (wParam) {
+                    case VK_ESCAPE:
+                        InputController.NotifyKeyUp(KeyboardKey::Escape);
+                        break;
+                    case VK_RETURN:
+                        InputController.NotifyKeyUp(KeyboardKey::Enter);
+                        break;
+                    case VK_RIGHT:
+                        InputController.NotifyKeyUp(KeyboardKey::Right);
+                        break;
+                    case VK_LEFT:
+                        InputController.NotifyKeyUp(KeyboardKey::Left);
+                        break;
+                    case VK_UP:
+                        InputController.NotifyKeyUp(KeyboardKey::Up);
+                        break;
+                    case VK_DOWN:
+                        InputController.NotifyKeyUp(KeyboardKey::Down);
+                        break;
+                }
+                break;
         }
         return DefWindowProc(hwnd, msg, wParam, lParam);;
     }
@@ -49,7 +133,7 @@ public:
     }
 
     bool ConfigBool(const char* name, bool defaultVal) const {
-        return strcmp("true", XO::AssetManager::EngineConfig("Window", name, defaultVal ? "true" : "false"))  == 0;
+        return strcmp("true", XO::AssetManager::EngineConfig("Window", name, defaultVal ? "true" : "false")) == 0;
     }
 
     int32 ConfigInt(const char* name, int32 defaultVal) const {
@@ -79,7 +163,7 @@ public:
             else {
                 style = WS_POPUP | WS_BORDER | WS_CAPTION | WS_SYSMENU;
             }
-            styleEx  = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+            styleEx = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
         }
         style |= WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
 
@@ -105,10 +189,10 @@ public:
         RECT desktop;
         GetWindowRect(hwndDesktop, &desktop);
 
-        int32 
+        int32
             x = desktop.right / 2,
             y = desktop.bottom / 2,
-            w = ConfigInt("Width", 1280), 
+            w = ConfigInt("Width", 1280),
             h = ConfigInt("Height", 720);
         x -= w / 2;
         y -= h / 2;
@@ -131,7 +215,7 @@ public:
         WString title = StringToWString(ConfigStr("Title", "Game"));
         Hwnd = CreateWindowEx(styleEx, L"game", title.c_str(), style, x, y, w, h, NULL, NULL, Hinstance, NULL);
         ensure(Hwnd != HWND(0), "CreateWindowEx failed.");
-        
+
         Hdc = GetDC(Hwnd);
         ensure(Hdc != HDC(0), "GetDC failed.");
 
@@ -218,7 +302,7 @@ public:
             };
             Hglrc = wglCreateContextAttribsARB(Hdc, 0, attribs);
             ensure(Hglrc != HGLRC(0), "wglCreateContextAttribsARB failed.");
-            
+
             ensure(wglDeleteContext(tempHglrc), "wglDeleteContext failed.");
 
             ensure(wglMakeCurrent(Hdc, Hglrc), "wglMakeCurrent failed.");
@@ -296,14 +380,20 @@ public:
 
 WindowImpl* WindowImpl::Self = nullptr;
 
-Window::Window()
-{
+Window* Window::WindowInstance = nullptr;
+
+Window::Window() {
+    xoFatalIf(WindowInstance != nullptr, "Only one window is supported.");
     Impl = new WindowImpl();
+    WindowInstance = this;
 }
 
-Window::~Window()
-{
+Window::~Window() {
     delete Impl;
+}
+
+/*static*/Window& Window::Get() {
+    return *WindowInstance;
 }
 
 bool Window::Create() {

@@ -262,6 +262,7 @@
     <ClInclude Include="Include\Entity.h" />
     <ClInclude Include="Include\Game\GameScene.h" />
     <ClInclude Include="Include\Hash.h" />
+    <ClInclude Include="Include\Input.h" />
     <ClInclude Include="Include\Log.h" />
     <ClInclude Include="Include\Renderer.h" />
     <ClInclude Include="Include\Scene.h" />
@@ -304,6 +305,7 @@
     <ClCompile Include="Source\Component_Model.cpp" />
     <ClCompile Include="Source\Entity.cpp" />
     <ClCompile Include="Source\Game\GameScene.cpp" />
+    <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Renderer.cpp" />

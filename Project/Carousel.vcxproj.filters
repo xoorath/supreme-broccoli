@@ -222,6 +222,9 @@
     <ClInclude Include="Include\Widgets\Carousel\CarouselNodeProperties.h">
       <Filter>Header Files\Include\Widgets\Carousel</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Input.h">
+      <Filter>Header Files\Include\Assets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -301,6 +304,9 @@
     </ClCompile>
     <ClCompile Include="Source\Widgets\Carousel\SubWidget_CarouselNode.cpp">
       <Filter>Source Files\Source\Widgets\Carousel</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Input.cpp">
+      <Filter>Source Files\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

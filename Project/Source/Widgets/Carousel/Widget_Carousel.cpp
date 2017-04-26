@@ -2,8 +2,9 @@
 
 #include <Include/Assets/AssetManager.h>
 #include <Include/Assets/Config.h>
-#include <Include/Entity.h>
 #include <Include/Component_Model.h>
+#include <Include/Entity.h>
+#include <Include/Input.h>
 #include <Include/Log.h>
 #include <Include/TextHelpers.h>
 #include <Include/Widgets/Carousel/CarouselNodeProperties.h>
@@ -44,8 +45,18 @@ struct CarouselDataProperties {
 
 class Widget_CarouselImpl {
 public:
+    struct NodeLocation {
+        Vector3 Position;
+        float32 Scale;
+        float32 Alpha;
+    };
 
-    float32 ManualScrollPosition = 0.0f;
+    Array<NodeLocation> NodeLocations;
+    float32 ScrollPosition = 0.0f;
+    int32 CurrentlySelectedIndex = 0;
+    int32 AutoScrollIndex = -1;
+
+    bool IsManuallyScrolling = false;
 
     Widget_CarouselImpl(Widget_Carousel* carousel)
         : Owner(carousel)
@@ -59,7 +70,6 @@ public:
     }
 
     void Init(XO::Entity* owner) {
-
         float32 White[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
         float32 Red[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
 
@@ -85,8 +95,11 @@ public:
         Owner->GetString("ContentConfig", DataProperties.ContentConfig, Required);
         Owner->GetInt("NumEntries", DataProperties.NumEntries, Required);
 
+        xoFatalIf(DataProperties.NumEntries <= 0, "No nodes were provided to the carousel. This isn't supported.");
         
         Nodes.resize(DataProperties.NumEntries, nullptr);
+
+        CurrentlySelectedIndex = DataProperties.NumEntries / 2;
 
         Config ContentConfig(AssetManager::RelativetoAssetsRoot(DataProperties.ContentConfig));
         for (int32 i = 0; i < DataProperties.NumEntries; ++i) {
@@ -101,15 +114,59 @@ public:
 
         SetupNodeLocations();
 
+        Input& input = Input::Get();
+        input.SubscribeToMouseEvent(
+            InputPriorities::Carousel_Navigation, 
+            MouseSubscriptionType::MouseDrag,
+
+            /*Consume?*/ [this](const class Vector2&) { 
+                IsManuallyScrolling = true;
+                AutoScrollIndex = -1;
+                return InputConsumptionType::Consume; 
+            },
+
+            /*Update*/ [this](const class Vector2& start, const class Vector2& current, const class Vector2& deltaPos, float dt) {
+                if (IsManuallyScrolling) {
+                    ScrollPosition += (-deltaPos.x / 1280.0f)  * 3.0f;
+                }
+            },
+
+            /*End*/ [this]() {
+                IsManuallyScrolling = false;
+            });
+
+        input.SubscribeToKeyEvent(
+            InputPriorities::Carousel_Navigation,
+            KeySubscriptionType::Press,
+
+            /*Consume?*/[](KeyboardKey key) {
+                if (key == KeyboardKey::Left || key == KeyboardKey::Right) {
+                    return InputConsumptionType::Consume;
+                }
+                return InputConsumptionType::DontConsume;
+            },
+
+            /*Update*/ [this](KeyboardKey key) {
+                int32 scrollDir = key == KeyboardKey::Left ? -1 : 1;
+                if (AutoScrollIndex == -1) {
+                    AutoScrollIndex = CurrentlySelectedIndex + scrollDir;
+                }
+                else {
+                    AutoScrollIndex += scrollDir;
+                }
+                if (AutoScrollIndex < 0) {
+                    AutoScrollIndex = 0;
+                }
+                else if (AutoScrollIndex >= Nodes.size() - 1) {
+                    AutoScrollIndex = Nodes.size() - 1;
+                }
+                IsManuallyScrolling = false;
+            },
+
+            /*End*/ [this]() {
+            });
+
     }
-
-    struct NodeLocation {
-        Vector3 Position;
-        float32 Scale;
-        float32 Alpha;
-    };
-
-    Array<NodeLocation> NodeLocations;
 
     void SetupNodeLocations() {
         uint32 sideNodes = ((DisplayProperties.CarouselNodesOnScreen-1)/2)+1;
@@ -162,7 +219,7 @@ public:
         }
         
         // Assuming this node is on screen, interpolate between the positions then flip relevant signs.
-        if (nextScrollIndex < NodeLocations.size()) {
+        if (nextScrollIndex < (int32)NodeLocations.size()) {
             auto& prev = NodeLocations[scrollIndex];
             auto& next = NodeLocations[nextScrollIndex];
 
@@ -173,16 +230,6 @@ public:
 
             outNodeLocation.Alpha = Lerp(prev.Alpha, next.Alpha, scrollDelta);
         }
-        //else if (scrollIndex == -1 || scrollIndex == NodeLocations.size() - 1) {
-        //    auto& prev = NodeLocations[scrollIndex];
-
-        //    outNodeLocation.Position = prev.Position;
-        //    outNodeLocation.Position.x *= sign;
-
-        //    outNodeLocation.Scale = Lerp(prev.Scale, 0.0f, scrollDelta);
-
-        //    outNodeLocation.Alpha = Lerp(prev.Alpha, 0.0f, scrollDelta);
-        //}
         else {
             // Make this node invisible if it's scrolled off screen.
             auto& last = NodeLocations[NodeLocations.size() - 1];
@@ -197,8 +244,64 @@ public:
 
         NodeLocation location;
         float32 rgba[4];
+        
+        ////////////////////////////////////////////////////////////////////////// Auto scroll based on keyboard/far-click
+
+        if (AutoScrollIndex != -1) {
+            if (AutoScrollIndex == CurrentlySelectedIndex) {
+                AutoScrollIndex = -1;
+            }
+            else {
+                if (AutoScrollIndex < CurrentlySelectedIndex) {
+                    ScrollPosition += dt*7;
+                }
+                else {
+                    ScrollPosition -= dt*7;
+                }
+
+            }
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////// Select active index based on scroll position
+        while (ScrollPosition > 0.5f) {
+            ScrollPosition -= 1.0f;
+            CurrentlySelectedIndex--;
+        }
+
+        while (ScrollPosition < -0.5f) {
+            ScrollPosition += 1.0f;
+            CurrentlySelectedIndex++;
+        }
+
+        if (CurrentlySelectedIndex < 0) {
+            CurrentlySelectedIndex = 0;
+        }
+
+        if (CurrentlySelectedIndex >= (int32)Nodes.size()) {
+            CurrentlySelectedIndex = (int32)Nodes.size()-1;
+        }
+
+        ////////////////////////////////////////////////////////////////////////// clamp scroll in place (with over-scroll spring)
+        const float MaxOverScroll = 0.4f; // don't set higher than 0.5
+        if (CurrentlySelectedIndex == 0 && ScrollPosition > MaxOverScroll) {
+            ScrollPosition = MaxOverScroll;
+        }
+        if (CurrentlySelectedIndex == (int32)Nodes.size() - 1 && ScrollPosition < -MaxOverScroll) {
+            ScrollPosition = -MaxOverScroll;
+        }
+
+        ////////////////////////////////////////////////////////////////////////// Smoothly return to active index.
+        if (!IsManuallyScrolling && AutoScrollIndex == -1) {
+            // TODO: data drive
+            const float32 scrollSnapSpeed = 7.0f;
+            ScrollPosition = Lerp(ScrollPosition, 0.0f, dt * scrollSnapSpeed);
+        }
+
+        ////////////////////////////////////////////////////////////////////////// Position all nodes based on the known scroll position.
         for (uint32 i = 0; i < Nodes.size(); ++i) {
-            GetLocationForNode(location, ManualScrollPosition + (float)i - (float)sideNodes);
+            float32 indexRelativePosition = (float32)i - (float32)CurrentlySelectedIndex;
+            GetLocationForNode(location, ScrollPosition + indexRelativePosition);
             
             Nodes[i]->GetRGBA(rgba);
             rgba[3] = location.Alpha;
@@ -208,9 +311,6 @@ public:
             entity.SetPosition(location.Position);
             entity.SetScale(location.Scale);
         }
-        static float gt = 0.0f;
-        gt += dt*0.5f;
-        ManualScrollPosition = Sin(gt)*2.0f;
     }
 
 private:

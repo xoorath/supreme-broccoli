@@ -10,6 +10,8 @@ public:
     Window();
     ~Window();
 
+    static Window& Get();
+
     bool Create();
     void Close();
     void SetTitle(String title);
@@ -21,6 +23,7 @@ public:
     class Subscription& OnWindowClosed();
 
 private:
+    static Window* WindowInstance;
     class WindowImpl* Impl;
 };
 }

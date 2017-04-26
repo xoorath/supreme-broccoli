@@ -31,7 +31,6 @@ public:
 
     const class Matrix4x4& GetTransform() const;
     void GetWorldTransform(class Matrix4x4& outMatrix) const;
-
 protected:
     class Entity* Owner;
 private:

@@ -109,8 +109,8 @@ public:
 
     void Init() {
         SimpleShader.Load("Shaders/Simple.vert", "Shaders/Simple.frag");
-        //23, 27, 36
-        glClearColor(23.f / 255.f, 27.f / 255.f, 36.f / 255.f, 1.0);
+        
+        glClearColor(43.f / 255.f, 47.f / 255.f, 56.f / 255.f, 1.0);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
         glEnable(GL_CULL_FACE);
