@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Include/Macros.h>
 #include <Include/Types.h>
 
 namespace XO

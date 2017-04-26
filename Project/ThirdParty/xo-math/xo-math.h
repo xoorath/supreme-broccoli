@@ -358,6 +358,11 @@ _XOINL float ATan(float f)              { return atanf(f); }
 _XOINL float ATan2(float y, float x)    { return atan2f(y, x); } 
 _XOINL float Difference(float x, float y) { return Abs(x-y); }
 
+_XOINL 
+float Lerp(float a, float b, float t) {
+    return a + (b - a) * t;
+}
+
 _XOINL
 void Sin_x2(const float* f, float* s) {
     XO_ASSERT(IsAligned16(f) && IsAligned16(s), "xo-math Sin_x2 requires aligned params.");

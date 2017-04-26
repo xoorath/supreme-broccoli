@@ -27,7 +27,9 @@ public:
     void Init(class Renderer* renderer) {
         CarouselData.LinkFallback(&CarouselConfig);
 
-        CarouselData["Beta"] = 6;
+        // As part of the demo, I'm showing here that the code can provide data
+        // to the widgets that overrides what the config has.
+        CarouselData["CarouselNodesOnScreen"] = 7;
         CarouselComponent = UI::Component_Widget::CreateWidget_Carousel(&CarouselData);
 
         UIRoot.AddComponent(CarouselComponent);

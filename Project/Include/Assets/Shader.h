@@ -13,6 +13,7 @@ public:
 
         void SetAsMatrix4x4(float32* data);
         void SetAsVector3(float32* data);
+        void SetAsVector4(float32* data);
         void SetTextureUnit(uint32 unit);
 
     private:

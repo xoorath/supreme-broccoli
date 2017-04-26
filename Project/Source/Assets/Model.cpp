@@ -19,9 +19,7 @@ public:
 
     ModelImpl(Model* owner, String path) 
         : Owner(owner) {
-        String confPath = AssetManager::AssetsRoot();
-        confPath += "/" + path;
-        Config modelConfig(confPath.c_str());
+        Config modelConfig(AssetManager::RelativetoAssetsRoot(path));
 
         const char* modelType = modelConfig.Get("model", "type", nullptr);
         xoFatalIf(modelType == nullptr, "Malformed model file.");
@@ -31,9 +29,7 @@ public:
             String objFilename(modelConfig.Get("obj", "obj", nullptr));
             xoFatalIf(objFilename.length() <= 0, "malformed model file (obj section)");
 
-            String objPath = AssetManager::AssetsRoot();
-            objPath += "/" + objFilename;
-            LoadOBJModel(objPath);
+            LoadOBJModel(AssetManager::RelativetoAssetsRoot(objFilename));
         }
         else {
             xoErr("Only obj models are supported at this time.");
@@ -97,7 +93,6 @@ private:
                  (uint8)VertexDescriptionFlags::Normal | 
                  (uint8)VertexDescriptionFlags::UV);
 
-            String texPath = AssetManager::AssetsRoot();
             submesh.Texture.Load(mat.diffuse_texname);
 
             ensure(submesh.Texture.GetIsValid(), "Failed to load texture for mesh.");

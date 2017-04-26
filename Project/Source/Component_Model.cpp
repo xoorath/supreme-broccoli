@@ -8,32 +8,41 @@
 
 namespace XO {
 
-class Component_ModelImpl {
+_XOSIMDALIGN class Component_ModelImpl {
 public:
+    _XO_OVERLOAD_NEW_DELETE()
     String ModelPath;
-    Texture2D texture;
-    uint32 renderJob;
+    Texture2D Texture;
+    RenderJobParams RenderJob;
 
     Component_ModelImpl(const char* modelPath)
-    : ModelPath(modelPath)
-    , renderJob(-1) {
+    : ModelPath(modelPath) {
+    }
+
+    ~Component_ModelImpl() {
+        Texture.Unload();
     }
 
     void InitRender(Renderer& renderer) {
         Model ModelAsset;
         ModelAsset.OnLoaded.Add([&](ModelData& data) {
-            texture = data.Meshes[0].Texture;
-            renderJob = renderer.PrepareJob(data);
+            Texture = data.Meshes[0].Texture;
+            RenderJob.JobId = renderer.PrepareJob(data);
         });
         ModelAsset.Load(ModelPath);
     }
 
-    void Update(float dt) {
-
+    void Render(Renderer& renderer, float dt, const Matrix4x4& transform) {
+        RenderJob.Transform = transform;
+        renderer.SubmitJob(RenderJob);
     }
 
-    void Render(Renderer& renderer, float dt, const Matrix4x4& transform) {
-        renderer.SubmitJob(renderJob, transform);
+    void GetRGBA(float32 outRGBA[]) const {
+        memcpy(outRGBA, RenderJob.RGBA, sizeof(float32) * 4);
+    }
+
+    void SetRGBA(float32 RGBA[]) {
+        memcpy(RenderJob.RGBA, RGBA, sizeof(float32) * 4);
     }
 
 };
@@ -47,12 +56,16 @@ Component_Model::~Component_Model() {
     delete Impl;
 }
 
-void Component_Model::InitRender(Renderer& renderer) {
-    Impl->InitRender(renderer);
+void Component_Model::GetRGBA(float32 outRGBA[]) const {
+    Impl->GetRGBA(outRGBA);
 }
 
-void Component_Model::Update(float dt) {
-    Impl->Update(dt);
+void Component_Model::SetRGBA(float32 RGBA[]) {
+    Impl->SetRGBA(RGBA);
+}
+
+void Component_Model::InitRender(Renderer& renderer) {
+    Impl->InitRender(renderer);
 }
 
 void Component_Model::Render(Renderer& renderer, float dt) {

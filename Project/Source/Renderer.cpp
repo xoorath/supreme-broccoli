@@ -47,7 +47,7 @@ public:
         Texture = mesh.Texture;
     }
     
-    void Render(const Matrix4x4& Transform) {
+    void Render(const RenderJobParams& params) {
         if (IBO != -1) {
             glBindTexture(GL_TEXTURE_2D, Texture.GetTextureID());
 
@@ -113,7 +113,7 @@ public:
 
 _XOSIMDALIGN struct RenderJob {
     Renderable* RenderableAsset;
-    Matrix4x4 Transform;
+    RenderJobParams Params;
 };
 
 _XOSIMDALIGN class RendererImpl {
@@ -122,19 +122,14 @@ public:
 
     ShaderProgram SimpleShader;
 
-    ShaderProgram::Uniform UModelViewProjectionMatrix;
-    ShaderProgram::Uniform UModelViewMatrix;
-    ShaderProgram::Uniform UModelMatrix;
-    ShaderProgram::Uniform UViewMatrix;
-    ShaderProgram::Uniform UProjectionMatrix;
-    ShaderProgram::Uniform ULightPos;
+    ShaderProgram::Uniform UModelProjectionMatrix;
+    ShaderProgram::Uniform ULightDirection;
+    ShaderProgram::Uniform UTint;
     ShaderProgram::Uniform USampler;
 
-    Matrix4x4 ViewMatrix;
-    Matrix4x4 ProjectionMatrix;
-    Vector3 LightPos;
-
     Array<Renderable> Renderables;
+
+    Matrix4x4 ProjectionMatrix;
 
     RendererImpl() {
         CurrentJobs.reserve(1024);
@@ -142,7 +137,8 @@ public:
 
     void Init() {
         SimpleShader.Load("Shaders/Simple.vert", "Shaders/Simple.frag");
-        glClearColor(100.f / 255.f, 149.f / 255.f, 239.f / 255.f, 1.0);
+        //23, 27, 36
+        glClearColor(23.f / 255.f, 27.f / 255.f, 36.f / 255.f, 1.0);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
         glEnable(GL_CULL_FACE);
@@ -156,56 +152,35 @@ public:
 
         checkgl();
 
+        SimpleShader.Use(); 
 
-        UModelViewProjectionMatrix = SimpleShader["MVP"];
-        UModelViewMatrix = SimpleShader["MV"];
-        UModelMatrix = SimpleShader["M"];
-        UViewMatrix = SimpleShader["V"];
-        UProjectionMatrix = SimpleShader["P"];
-        ULightPos = SimpleShader["LightPosition_worldspace"];
+        UModelProjectionMatrix = SimpleShader["MP"];
+        ULightDirection = SimpleShader["LightDirection"];;
+        UTint = SimpleShader["Tint"];
+        USampler = SimpleShader["Sampler"];
 
-        LightPos.Set(4, 4, 4);
-
-        USampler = SimpleShader["myTextureSampler"];
+        Vector3 LightDirection(1.0f, 1.0f, 1.0f);
+        LightDirection.Normalize();
+        ULightDirection.SetAsVector3(LightDirection); ;
 
         ProjectionMatrix = Matrix4x4::PerspectiveProjectionDegrees(60, 1280.0f / 720.0f, 0.1f, 100);
-
 
         checkgl();
     }
 
     void RenderScene() {
-        Matrix4x4 MVP, MV;
-
+        
+        Matrix4x4 MP;
         for (auto & job : CurrentJobs) {
-            MV = ViewMatrix * job.Transform;
-            MVP = ProjectionMatrix * MV;
 
-            UModelMatrix.SetAsMatrix4x4(job.Transform);
-            UModelViewProjectionMatrix.SetAsMatrix4x4(MVP);
-            UModelViewMatrix.SetAsMatrix4x4(MV);
+            MP = job.Params.Transform * ProjectionMatrix;
+            UModelProjectionMatrix.SetAsMatrix4x4(MP);
+            UTint.SetAsVector4(job.Params.RGBA);
 
-            job.RenderableAsset->Render(job.Transform);
-
-            job.Transform[3][2] += 1.0f;
-            job.RenderableAsset->Render(job.Transform);
+            job.RenderableAsset->Render(job.Params);
         }
 
         CurrentJobs.clear();
-    }
-
-    void UpdateCamera() {
-        static float gt = 0;
-        gt += 0.001f;
-
-        const float radius = 10.0f;
-        Vector3 cameraPos = Vector3::Zero;
-        cameraPos.x = XO::Cos(gt) * radius;
-        cameraPos.z = XO::Sin(gt) * radius;
-
-        Matrix4x4::LookAtFromPosition(cameraPos, Vector3::Zero, Vector3::Up, ViewMatrix);
-
-        ViewMatrix = Matrix4x4::Identity;
     }
 
     void Render() {
@@ -215,12 +190,6 @@ public:
 
         glActiveTexture(GL_TEXTURE0);
         USampler.SetTextureUnit(0);
-
-        ULightPos.SetAsVector3(LightPos);
-
-        UpdateCamera();
-        UViewMatrix.SetAsMatrix4x4(ViewMatrix);
-        UProjectionMatrix.SetAsMatrix4x4(ProjectionMatrix);
 
         RenderScene();
         checkgl();
@@ -249,11 +218,11 @@ public:
         return CurrentJobId;
     }
 
-    void SubmitJob(uint32 renderable, const Matrix4x4& transform) {
+    void SubmitJob(const RenderJobParams& params) {
         CurrentJobs.push_back(RenderJob());
         RenderJob& thisJob = CurrentJobs[CurrentJobs.size() - 1];
-        thisJob.Transform = transform;
-        thisJob.RenderableAsset = RenderableJobs[renderable];
+        thisJob.RenderableAsset = RenderableJobs[params.JobId];
+        thisJob.Params = params;
     }
 
 private:
@@ -310,8 +279,8 @@ uint32 Renderer::PrepareJob(struct ModelData& modelData) {
     return Impl->PrepareJob(modelData);
 }
 
-void Renderer::SubmitJob(uint32 job, const class Matrix4x4& transform) {
-    Impl->SubmitJob(job, transform);
+void Renderer::SubmitJob(const RenderJobParams& params) {
+    Impl->SubmitJob(params);
 }
 
 }

@@ -1,10 +1,14 @@
 #pragma once
 
+#include <Include/Types.h>
+
 namespace XO {
 
 class AssetManager {
 public:
     static const char* AssetsRoot();
+    static const char* RelativetoAssetsRoot(const char* childPath);
+    static const char* RelativetoAssetsRoot(const String& childPath);
     static const char* EngineConfig(const char* group, const char* name, const char* defaultValue = nullptr);
 
     //////////////////////////////////////////////////////////////////////////

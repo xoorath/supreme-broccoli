@@ -19,8 +19,7 @@ static_assert(sizeof(GLuint) == sizeof(uint32), "Size of GLuint is not what was 
 uint32 ShaderProgram::LastUsedProgramID = -1;
 
 String GetProgramCode(const char* programPath) {
-    String fullpath(AssetManager::AssetsRoot());
-    std::ifstream stream(fullpath + "/" + programPath);
+    std::ifstream stream(AssetManager::RelativetoAssetsRoot(programPath));
     if (!stream.is_open()) {
         xoFatal("Could not open shader at path " << programPath << "!");
         return "";
@@ -53,6 +52,12 @@ void ShaderProgram::Uniform::SetAsMatrix4x4(float32* data) {
 void ShaderProgram::Uniform::SetAsVector3(float32* data) {
     if (UniformLocation != -1) {
         glUniform3f(UniformLocation, data[0], data[1], data[2]);
+    }
+}
+
+void ShaderProgram::Uniform::SetAsVector4(float32* data) {
+    if (UniformLocation != -1) {
+        glUniform4f(UniformLocation, data[0], data[1], data[2], data[3]);
     }
 }
 

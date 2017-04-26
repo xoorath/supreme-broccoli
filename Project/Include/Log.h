@@ -2,11 +2,10 @@
 
 #include <ThirdParty/easylogging++/easylogging++.h>
 
-#define xoFatal(msg)        LOG(FATAL) << msg;
-#define xoFatalIf(cnd, msg) if(cnd) { LOG(FATAL) << msg;}
-
-
 #if defined(GAME_FINAL)
+#define xoFatal(msg)        { LOG(FATAL) << msg; exit(-1); }
+#define xoFatalIf(cnd, msg) if(cnd) { LOG(FATAL) << msg; exit(-1); }
+
 #define xoLog(msg)
 #define xoWarn(msg)
 #define xoErr(msg)
@@ -15,6 +14,9 @@
 #define xoWarnIf(cnd, msg)
 #define xoErrIf(cnd, msg)
 #else
+#define xoFatal(msg)        { LOG(FATAL) << msg; __debugbreak(); exit(-1); }
+#define xoFatalIf(cnd, msg) if(cnd) { LOG(FATAL) << msg; __debugbreak(); exit(-1); }
+
 #define xoLog(msg)      LOG(INFO) << msg;
 #define xoWarn(msg)     LOG(WARN) << msg;
 #define xoErr(msg)      LOG(ERROR) << msg;

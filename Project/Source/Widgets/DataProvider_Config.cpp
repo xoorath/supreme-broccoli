@@ -78,9 +78,7 @@ private:
 };
 
 DataProvider_Config::DataProvider_Config(const char* configName, const char* group/*="Widget"*/) {
-    String configPath = AssetManager::AssetsRoot();
-    configPath += String("/") + configName;
-    Impl = new DataProvider_ConfigImpl(configPath.c_str(), group);
+    Impl = new DataProvider_ConfigImpl(AssetManager::RelativetoAssetsRoot(configName), group);
 }
 
 DataProvider_Config::~DataProvider_Config() {

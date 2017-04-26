@@ -27,8 +27,7 @@ Texture2D::~Texture2D() {
 
 void Texture2D::Load(String path) {
     // TODO: proper path joining/resolution.
-    String fullPath(AssetManager::AssetsRoot());
-    fullPath += "/" + path;
+    String fullPath = AssetManager::RelativetoAssetsRoot(path);
 
     FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
     FIBITMAP* dib = nullptr;

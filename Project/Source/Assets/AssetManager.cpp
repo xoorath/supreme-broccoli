@@ -1,7 +1,8 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <Include/Assets/AssetManager.h>
 
 #include <Include/Assets/Config.h>
-#include <Include/Types.h>
+#include <Include/Log.h>
 
 namespace XO {
 
@@ -19,6 +20,19 @@ public:
         return AssetsRoot;
     }
 
+    const char* RelativetoAssetsRoot(const char* childPath) const {
+        constexpr uint32 BUFF_SIZE = 1024;
+        xoErrIf(childPath == nullptr, "Can not resolve a null path.");
+    #if !defined(GAME_FINAL)
+        xoFatalIf(strlen(childPath) + strlen(AssetsRoot) + 1 > BUFF_SIZE, "Path excedes max size.");
+    #endif
+        static char buffer[BUFF_SIZE];
+
+
+        sprintf(buffer, "%s/%s", AssetsRoot, childPath);
+        return buffer;
+    }
+
     const char* GetEngineConfiguration(const char* group, const char* name, const char* defaultValue) {
         return EngineConfig.Get(group, name, defaultValue);
     }
@@ -27,18 +41,8 @@ public:
 AssetManagerImpl* AssetManager::ImplInstance = nullptr;
 
 AssetManager::AssetManager() {
-    // If we messed up the asset manager creation, it's quite likely we also messed up the log initialization.
-    // That's because the logs rely on the asset manager's correct loading of the engine config.
-    // So let's break here and tell the user about it this way instead.
-    if (ImplInstance) {
-
-        // Hey, so. You broke here. That means you have more than one AssetManager.
-        // That isn't supported.
-        __debugbreak(); 
-    }
-    else {
-        ImplInstance = new AssetManagerImpl();
-    }
+    xoFatalIf(ImplInstance != nullptr, "More than one asset manager is not supported.");
+    ImplInstance = new AssetManagerImpl();
 }
 
 AssetManager::~AssetManager() {
@@ -47,6 +51,14 @@ AssetManager::~AssetManager() {
 
 /*static*/ const char* AssetManager::AssetsRoot() {
     return ImplInstance->GetAssetsRoot();
+}
+
+/*static*/ const char* AssetManager::RelativetoAssetsRoot(const char* childPath) {
+    return ImplInstance->RelativetoAssetsRoot(childPath);
+}
+
+/*static*/ const char* AssetManager::RelativetoAssetsRoot(const String& childPath) {
+    return RelativetoAssetsRoot(childPath.c_str());
 }
 
 /*static*/ const char* AssetManager::EngineConfig(const char* group, const char* name, const char* defaultValue/*=nullptr*/) {

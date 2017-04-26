@@ -10,7 +10,9 @@ namespace XO {
 namespace UI {
 
 Component_Widget::~Component_Widget() {
-
+    if (OwnedWidget) {
+        delete OwnedWidget;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////// Widget factories.
@@ -23,10 +25,10 @@ Component_Widget::~Component_Widget() {
 
 ////////////////////////////////////////////////////////////////////////// Component Overrides
 void Component_Widget::Init() {
-    OwnedWidget->Init(Owner);
+    OwnedWidget->InternalInit(Owner);
 }
 void Component_Widget::Update(float dt) {
-    OwnedWidget->Update(dt);
+    OwnedWidget->InternalUpdate(dt);
 }
 ////////////////////////////////////////////////////////////////////////// End Component Overrides
 

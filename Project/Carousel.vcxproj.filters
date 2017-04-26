@@ -213,6 +213,15 @@
     <ClInclude Include="Include\Widgets\DataProvider_Code.h">
       <Filter>Header Files\Include\Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Widgets\SubWidget.h">
+      <Filter>Header Files\Include\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Widgets\Carousel\SubWidget_CarouselNode.h">
+      <Filter>Header Files\Include\Widgets\Carousel</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Widgets\Carousel\CarouselNodeProperties.h">
+      <Filter>Header Files\Include\Widgets\Carousel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -285,6 +294,12 @@
       <Filter>Source Files\Source\Widgets</Filter>
     </ClCompile>
     <ClCompile Include="Source\Widgets\Carousel\Widget_Carousel.cpp">
+      <Filter>Source Files\Source\Widgets\Carousel</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TextHelpers.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Widgets\Carousel\SubWidget_CarouselNode.cpp">
       <Filter>Source Files\Source\Widgets\Carousel</Filter>
     </ClCompile>
   </ItemGroup>
