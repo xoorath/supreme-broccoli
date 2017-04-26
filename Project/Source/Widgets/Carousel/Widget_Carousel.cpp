@@ -157,8 +157,8 @@ public:
                 if (AutoScrollIndex < 0) {
                     AutoScrollIndex = 0;
                 }
-                else if (AutoScrollIndex >= Nodes.size() - 1) {
-                    AutoScrollIndex = Nodes.size() - 1;
+                else if (AutoScrollIndex >= (int32)Nodes.size() - 1) {
+                    AutoScrollIndex = (int32)Nodes.size() - 1;
                 }
                 IsManuallyScrolling = false;
             },

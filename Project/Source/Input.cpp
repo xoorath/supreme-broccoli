@@ -127,6 +127,7 @@ public:
                 CurrentSubscription = nullptr;
                 IsDragging = false;
             }
+            IsReadyToStartDrag = false;
         }
     }
 
