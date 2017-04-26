@@ -28,6 +28,8 @@ public:
         xoFatalIf(ModelComponent != nullptr, "Carousel node is being setup twice. This isn't supported.");
 
         ModelComponent = new Component_Model(properties.ModelPath.c_str());
+        ModelComponent->SetRGBA(properties.Color);
+
         NodeWidget.AddComponent(ModelComponent);
 
         WrapperWidget.AddChild(&NodeWidget);
@@ -53,7 +55,7 @@ public:
     void Update(float dt) {
         time += dt;
         auto p = WrapperWidget.GetPosition();
-        NodeWidget.SetPosition(Vector3(0.0f, Sin(time + (p.x * 0.5f)) * 0.125f, 0.0f));
+        NodeWidget.SetPosition(Vector3(0.0f, Sin(time + (p.x * 0.5f)) * 0.1f, 0.0f));
     }
 
 private:

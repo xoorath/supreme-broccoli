@@ -45,6 +45,8 @@ struct CarouselDataProperties {
 class Widget_CarouselImpl {
 public:
 
+    float32 ManualScrollPosition = 0.0f;
+
     Widget_CarouselImpl(Widget_Carousel* carousel)
         : Owner(carousel)
         , CubeComponent("Models/Cube/cube.ini") {
@@ -97,55 +99,118 @@ public:
         owner->SetRotation(Vector3(-30.0f * Deg2Rad, 0.0f, 0.0f));
         owner->SetPosition(Vector3(0, DisplayProperties.CameraYOffset, DisplayProperties.CameraZOffset));
 
+        SetupNodeLocations();
+
     }
 
-    void UpdateNodeTransform(SubWidget_CarouselNode* node, float32 scrollPosition) {
-        Entity& entity = node->GetWrapperEntity();
+    struct NodeLocation {
+        Vector3 Position;
+        float32 Scale;
+        float32 Alpha;
+    };
+
+    Array<NodeLocation> NodeLocations;
+
+    void SetupNodeLocations() {
+        uint32 sideNodes = ((DisplayProperties.CarouselNodesOnScreen-1)/2)+1;
+        // +1 is to allow an extra one of 0 alpha at the end.
+        NodeLocations.resize(sideNodes +1);
 
         float32 xstep = DisplayProperties.CarouselNode_XOffset;
         float32 x = 0.0f;
-        for (float32 ix = 0.0f; ix < scrollPosition; ix += 1.0f) {
-            x += xstep;
-            xstep *= DisplayProperties.CarouselNode_XOffsetFalloff;
-        }
 
         float32 zstep = DisplayProperties.CarouselNode_ZOffset;
         float32 z = 0.0f;
-        for (float32 iz = 0.0f; iz < scrollPosition; iz += 1.0f) {
-            z += zstep;
-            zstep *= DisplayProperties.CarouselNode_ZOffsetFalloff;
-        }
 
         float32 sstep = DisplayProperties.CarouselNode_Scale;
         float32 s = sstep;
-        for (float32 is = 0.0f; is < scrollPosition; is += 1.0f) {
-            s = sstep;
-            sstep *= DisplayProperties.CarouselNode_ScaleFalloff;
+
+        float32 astep = DisplayProperties.CarouselNode_Alpha;
+        float32 a = astep;
+        for (uint32 i = 0; i < NodeLocations.size(); ++i) {
+            NodeLocations[i].Position.Set(x, 0.0f, z);
+            x += xstep;
+            xstep *= DisplayProperties.CarouselNode_XOffsetFalloff;
+            z += zstep;
+            zstep *= DisplayProperties.CarouselNode_ZOffsetFalloff;
+            
+            NodeLocations[i].Scale = s;
+            s *= DisplayProperties.CarouselNode_ScaleFalloff;
+
+            NodeLocations[i].Alpha = a;
+            a *= DisplayProperties.CarouselNode_AlphaFalloff;
         }
+        // this location is where off screen elements go.
+        NodeLocations[NodeLocations.size() - 1].Alpha = 0.0f;
+    }
 
-        float32 sign = scrollPosition >= 0.0f ? 1.0f : -1.0f;
+    void GetLocationForNode(NodeLocation& outNodeLocation, float32 scrollPosition) {
+        float32 absScrollPosition = Abs(scrollPosition);
 
-        x *= sign;
+        // Get indices of known scrolling positions, and the delta this node is between them.
+        int32 scrollIndex = (int32)floor(absScrollPosition);
+        int32 nextScrollIndex = scrollIndex + 1;
+        float32 scrollDelta = absScrollPosition - (float32)scrollIndex;
 
-        entity.SetPosition(Vector3(x, 0.0f, z));
-        entity.SetScale(s);
-        float32 rgba[4];
-        node->GetRGBA(rgba);
-        rgba[3] = s*s*s;
-        node->SetRGBA(rgba);
+        float32 sign;
+        if (scrollPosition >= 0.0f) {
+            sign = 1.0f;
+        }
+        else {
+            sign = -1.0f;
+            scrollDelta = scrollDelta;
+        }
+        
+        // Assuming this node is on screen, interpolate between the positions then flip relevant signs.
+        if (nextScrollIndex < NodeLocations.size()) {
+            auto& prev = NodeLocations[scrollIndex];
+            auto& next = NodeLocations[nextScrollIndex];
 
+            Vector3::Lerp(prev.Position, next.Position, scrollDelta, outNodeLocation.Position);
+            outNodeLocation.Position.x *= sign;
+
+            outNodeLocation.Scale = Lerp(prev.Scale, next.Scale, scrollDelta);
+
+            outNodeLocation.Alpha = Lerp(prev.Alpha, next.Alpha, scrollDelta);
+        }
+        //else if (scrollIndex == -1 || scrollIndex == NodeLocations.size() - 1) {
+        //    auto& prev = NodeLocations[scrollIndex];
+
+        //    outNodeLocation.Position = prev.Position;
+        //    outNodeLocation.Position.x *= sign;
+
+        //    outNodeLocation.Scale = Lerp(prev.Scale, 0.0f, scrollDelta);
+
+        //    outNodeLocation.Alpha = Lerp(prev.Alpha, 0.0f, scrollDelta);
+        //}
+        else {
+            // Make this node invisible if it's scrolled off screen.
+            auto& last = NodeLocations[NodeLocations.size() - 1];
+            outNodeLocation.Position = last.Position;
+            outNodeLocation.Scale = last.Scale;
+            outNodeLocation.Alpha = 0.0f;
+        }
     }
 
     void Update(float32 dt) {
-        uint32 sideNodes = (DisplayProperties.CarouselNodesOnScreen - 1) / 2;
-        for (uint32 i = 0; i < sideNodes+1; ++i) {
-            UpdateNodeTransform(Nodes[i], (float)i);
-        }
+        float32 sideNodes = (float)(DisplayProperties.CarouselNodesOnScreen - 1) / 2;
 
-        
-        for (uint32 i = Nodes.size()-1, j = 0; i > Nodes.size()- sideNodes; --i, ++j) {
-            UpdateNodeTransform(Nodes[i], -(float)j);
+        NodeLocation location;
+        float32 rgba[4];
+        for (uint32 i = 0; i < Nodes.size(); ++i) {
+            GetLocationForNode(location, ManualScrollPosition + (float)i - (float)sideNodes);
+            
+            Nodes[i]->GetRGBA(rgba);
+            rgba[3] = location.Alpha;
+            Nodes[i]->SetRGBA(rgba);
+
+            auto& entity = Nodes[i]->GetWrapperEntity();
+            entity.SetPosition(location.Position);
+            entity.SetScale(location.Scale);
         }
+        static float gt = 0.0f;
+        gt += dt*0.5f;
+        ManualScrollPosition = Sin(gt)*2.0f;
     }
 
 private:
@@ -158,7 +223,6 @@ private:
 
         const char* colorText = config.Get(configGroup.c_str(), "Color", nullptr);
         xoFatalIf(colorText == nullptr, "Carousel model data is invalid for entry: " << configGroup);
-        
 
         xoFatalIf(!TryConvertStringToRGBA(String(colorText), properties.Color), "Couldn't parse color from carousel model data for entry: " << configGroup);
 

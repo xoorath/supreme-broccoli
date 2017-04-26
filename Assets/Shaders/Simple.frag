@@ -12,5 +12,5 @@ uniform sampler2D Sampler;
 void main() {
 	vec3 texel = texture( Sampler, UV ).rgb * Tint.rgb;
 	float theta = clamp(dot( Normal, LightDirection ), 0.1, 0.9);
-	color = vec4(texel * theta , max(Tint.a, 0.2));
+	color = vec4(texel * theta , Tint.a);
 }

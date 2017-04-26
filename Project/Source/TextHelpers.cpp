@@ -30,17 +30,17 @@ bool TryConvertStringToRGBA(String input, float32 outColor[4]) {
 
     if (GetFunctionContents(input, HexRGBAFunc, contents)) {
         int32 hex = strtol(contents.c_str(), nullptr, 16);
-        outColor[0] = (float32)(hex & 0xff000000 >> 24) / 256.0f;
-        outColor[1] = (float32)(hex & 0x00ff0000 >> 16) / 256.0f;
-        outColor[2] = (float32)(hex & 0x0000ff00 >> 8) / 256.0f;
-        outColor[3] = (float32)(hex & 0x000000ff >> 0) / 256.0f;
+        outColor[0] = (float32)((hex & 0xff000000) >> 24) / 255.0f;
+        outColor[1] = (float32)((hex & 0x00ff0000) >> 16) / 255.0f;
+        outColor[2] = (float32)((hex & 0x0000ff00) >> 8) / 255.0f;
+        outColor[3] = (float32)((hex & 0x000000ff) >> 0) / 255.0f;
         return true;
     }
     else if (GetFunctionContents(input, HexRGBFunc, contents)) {
         int32 hex = strtol(contents.c_str(), nullptr, 16);
-        outColor[0] = (float32)(hex & 0xff0000 >> 16) / 256.0f;
-        outColor[1] = (float32)(hex & 0x00ff00 >> 8) / 256.0f;
-        outColor[2] = (float32)(hex & 0x0000ff >> 0) / 256.0f;
+        outColor[0] = (float32)((hex & 0xff0000) >> 16) / 255.0f;
+        outColor[1] = (float32)((hex & 0x00ff00) >> 8) / 255.0f;
+        outColor[2] = (float32)((hex & 0x0000ff) >> 0) / 255.0f;
         outColor[3] = 1.0f;
         return true;
     }

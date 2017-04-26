@@ -14,7 +14,7 @@
 #include <GL/GL.h>
 #endif
 
-#define checkgl() if(ReportAnyGLErrors()) { static bool once = false; if(!once) { __debugbreak(); once = true; } }
+#define checkgl() if(glGetError() != GL_NONE) { static bool once = false; if(!once) { __debugbreak(); once = true; } }
 
 namespace XO {
 
@@ -34,15 +34,15 @@ public:
         NumTriangles = data.Meshes[0].NumTriangles;
 
         GLuint buffers[2];
-        glGenBuffers(2, buffers); checkgl();
+        glGenBuffers(2, buffers);
         VBO = buffers[0];
         IBO = buffers[1];
 
-        glBindBuffer(GL_ARRAY_BUFFER, VBO); checkgl();
-        glBufferData(GL_ARRAY_BUFFER, mesh.VertexBufferSize, mesh.VertexBuffer, GL_STATIC_DRAW); checkgl();
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, mesh.VertexBufferSize, mesh.VertexBuffer, GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO); checkgl();
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.IndexBufferSize, mesh.IndexBuffer, GL_STATIC_DRAW); checkgl();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.IndexBufferSize, mesh.IndexBuffer, GL_STATIC_DRAW);
 
         Texture = mesh.Texture;
     }
@@ -53,56 +53,28 @@ public:
 
             constexpr uint32 stride = sizeof(float32) * (3 + 3 + 2);
 
-            glEnableVertexAttribArray(0); checkgl();
-            glBindBuffer(GL_ARRAY_BUFFER, VBO); checkgl();
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0); checkgl();
+            glEnableVertexAttribArray(0);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0); 
 
-            glEnableVertexAttribArray(1); checkgl();
-            glBindBuffer(GL_ARRAY_BUFFER, VBO); checkgl();
-            glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, stride, (void*)12); checkgl();
+            glEnableVertexAttribArray(1);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, stride, (void*)12);
 
 
-            glEnableVertexAttribArray(2); checkgl();
-            glBindBuffer(GL_ARRAY_BUFFER, VBO); checkgl();
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)24); checkgl();
+            glEnableVertexAttribArray(2);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)24);
 
             // Index buffer
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO); checkgl();
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 
-            glDrawElements(GL_TRIANGLES, NumTriangles*3, GL_UNSIGNED_INT, (void*)0); checkgl();
+            glDrawElements(GL_TRIANGLES, NumTriangles*3, GL_UNSIGNED_INT, (void*)0);
 
-            glDisableVertexAttribArray(0); checkgl();
-            glDisableVertexAttribArray(1); checkgl();
-            glDisableVertexAttribArray(2); checkgl();
+            glDisableVertexAttribArray(0);
+            glDisableVertexAttribArray(1);
+            glDisableVertexAttribArray(2);
         }
-    }
-
-    bool ReportAnyGLErrors() const {
-        auto err = glGetError();
-        if (err != GL_NO_ERROR) {
-            switch (err) {
-                case GL_INVALID_ENUM:
-                    xoErr("OpenGL Error: Invalid enum. " << err);
-                    break;
-                case GL_INVALID_VALUE:
-                    xoErr("OpenGL Error: Invalid value. " << err);
-                    break;
-                case GL_INVALID_OPERATION:
-                    xoErr("OpenGL Error: Invalid operation. " << err);
-                    break;
-                case GL_STACK_OVERFLOW:
-                    xoErr("OpenGL Error: Stack overflow. " << err);
-                    break;
-                case GL_STACK_UNDERFLOW:
-                    xoErr("OpenGL Error: Stack underflow. " << err);
-                    break;
-                case GL_OUT_OF_MEMORY:
-                    xoErr("OpenGL Error: Out of memory. " << err);
-                    break;
-            }
-            return true;
-        }
-        return false;
     }
 
     ~Renderable() {
@@ -223,35 +195,6 @@ public:
         RenderJob& thisJob = CurrentJobs[CurrentJobs.size() - 1];
         thisJob.RenderableAsset = RenderableJobs[params.JobId];
         thisJob.Params = params;
-    }
-
-private:
-    bool ReportAnyGLErrors() const {
-        auto err = glGetError();
-        if (err != GL_NO_ERROR) {
-            switch (err) {
-                case GL_INVALID_ENUM:
-                    xoErr("OpenGL Error: Invalid enum. " << err);
-                    break;
-                case GL_INVALID_VALUE:
-                    xoErr("OpenGL Error: Invalid value. " << err);
-                    break;
-                case GL_INVALID_OPERATION:
-                    xoErr("OpenGL Error: Invalid operation. " << err);
-                    break;
-                case GL_STACK_OVERFLOW:
-                    xoErr("OpenGL Error: Stack overflow. " << err);
-                    break;
-                case GL_STACK_UNDERFLOW:
-                    xoErr("OpenGL Error: Stack underflow. " << err);
-                    break;
-                case GL_OUT_OF_MEMORY:
-                    xoErr("OpenGL Error: Out of memory. " << err);
-                    break;
-            }
-            return true;
-        }
-        return false;
     }
 };
 
